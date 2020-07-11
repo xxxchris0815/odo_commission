@@ -26,8 +26,7 @@ msgstr "Comisión"
 #. module: sale_commission_pricelist
 #: model:ir.model,name:sale_commission_pricelist.model_product_pricelist_item
 #, fuzzy
-#| msgid "Pricelist item"
-msgid "Pricelist Item"
+msgid "Pricelist Rule"
 msgstr "Elemento de la tarifa"
 
 #. module: sale_commission_pricelist
