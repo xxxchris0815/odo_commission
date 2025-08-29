@@ -3,7 +3,7 @@
 
 from odoo.tests.common import Form
 
-from odoo.addons.account_commission.tests.test_account_commission import (
+from odoo.addons.account_commission_oca.tests.test_account_commission import (
     TestAccountCommission,
 )
 
