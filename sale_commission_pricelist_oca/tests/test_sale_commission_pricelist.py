@@ -1,7 +1,7 @@
 # Copyright 2018 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import Form
+from odoo.tests import Form
 
 from odoo.addons.account_commission_oca.tests.test_account_commission import (
     TestAccountCommission,
@@ -52,7 +52,7 @@ class TestSaleCommissionPricelist(TestAccountCommission):
         )
 
     def _create_sale_order(self):
-        agent = self.env.ref("commission.res_partner_pritesh_sale_agent")
+        agent = self.env.ref("commission_oca.res_partner_pritesh_sale_agent")
         self.partner.agent_ids = [(6, 0, agent.ids)]
         order_form = Form(self.env["sale.order"])
         order_form.partner_id = self.partner
