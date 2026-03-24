@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# * sale_commission_pricelist
+# * sale_commission_pricelist_oca
 #
 # Translators:
 # Lorenzo Battistini <lorenzo.battistini@agilebg.com>, 2018
@@ -19,35 +19,35 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.17\n"
 
-#. module: sale_commission_pricelist
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_product_pricelist_item__commission_id
+#. module: sale_commission_pricelist_oca
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_product_pricelist_item__commission_id
 msgid "Commission"
 msgstr "Provvigione"
 
-#. module: sale_commission_pricelist
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_product_pricelist_item__display_name
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_sale_order_line__display_name
+#. module: sale_commission_pricelist_oca
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_product_pricelist_item__display_name
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_sale_order_line__display_name
 msgid "Display Name"
 msgstr "Nome visualizzato"
 
-#. module: sale_commission_pricelist
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_product_pricelist_item__id
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_sale_order_line__id
+#. module: sale_commission_pricelist_oca
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_product_pricelist_item__id
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_sale_order_line__id
 msgid "ID"
 msgstr "ID"
 
-#. module: sale_commission_pricelist
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_product_pricelist_item____last_update
-#: model:ir.model.fields,field_description:sale_commission_pricelist.field_sale_order_line____last_update
+#. module: sale_commission_pricelist_oca
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_product_pricelist_item____last_update
+#: model:ir.model.fields,field_description:sale_commission_pricelist_oca.field_sale_order_line____last_update
 msgid "Last Modified on"
 msgstr "Ultima modifica il"
 
-#. module: sale_commission_pricelist
-#: model:ir.model,name:sale_commission_pricelist.model_product_pricelist_item
+#. module: sale_commission_pricelist_oca
+#: model:ir.model,name:sale_commission_pricelist_oca.model_product_pricelist_item
 msgid "Pricelist Rule"
 msgstr "Regola listino prezzi"
 
-#. module: sale_commission_pricelist
-#: model:ir.model,name:sale_commission_pricelist.model_sale_order_line
+#. module: sale_commission_pricelist_oca
+#: model:ir.model,name:sale_commission_pricelist_oca.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "Riga ordine di vendita"
