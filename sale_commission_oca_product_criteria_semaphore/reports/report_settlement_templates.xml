@@ -2,7 +2,7 @@
 <odoo>
     <template
         id="report_settlement_document"
-        inherit_id="sale_commission_product_criteria.report_settlement_add_value_column"
+        inherit_id="sale_commission_oca_product_criteria.report_settlement_document"
     >
         <xpath expr="//span[@t-field='l.commission_id']/.." position="after">
             <td class="text-start">
@@ -52,7 +52,9 @@
                         </t>
                     </t>
                     <tr>
-                        <td><span class="fa fa-circle text-success" /></td>
+                        <td>
+                            <span class="fa fa-circle text-success" />
+                        </td>
                         <td class="text-right">
                             <span
                                 t-esc="semaphore_success"
@@ -61,7 +63,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><span class="fa fa-circle text-warning" /></td>
+                        <td>
+                            <span class="fa fa-circle text-warning" />
+                        </td>
                         <td class="text-right">
                             <span
                                 t-esc="semaphore_warning"
@@ -70,7 +74,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><span class="fa fa-circle text-danger" /></td>
+                        <td>
+                            <span class="fa fa-circle text-danger" />
+                        </td>
                         <td class="text-right">
                             <span
                                 t-esc="semaphore_danger"
@@ -79,7 +85,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><span class="fa fa-circle" /></td>
+                        <td>
+                            <span class="fa fa-circle" />
+                        </td>
                         <td class="text-right">
                             <span
                                 t-esc="semaphore_none"

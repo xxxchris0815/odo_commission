@@ -3,13 +3,13 @@
 {
     "name": "Sale Commission Product Criteria Semaphore",
     "summary": "Add semaphore for advanced commissions rules",
-    "version": "15.0.1.0.0",
+    "version": "18.0.1.0.0",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "maintainers": ["CarlosRoca13"],
     "website": "https://github.com/OCA/commission",
     "category": "Sales Management",
     "license": "AGPL-3",
-    "depends": ["sale_commission_product_criteria", "sale_semaphore"],
+    "depends": ["sale_commission_oca_product_criteria", "sale_semaphore"],
     "data": [
         "reports/report_settlement_templates.xml",
         "views/commission_item_views.xml",

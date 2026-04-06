@@ -1,7 +1,3 @@
-.. image:: https://odoo-community.org/readme-banner-image
-   :target: https://odoo-community.org/get-involved?utm_source=readme
-   :alt: Odoo Community Association
-
 ==========================================
 Sale Commission Product Criteria Semaphore
 ==========================================
@@ -17,27 +13,28 @@ Sale Commission Product Criteria Semaphore
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+.. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fcommission-lightgray.png?logo=github
-    :target: https://github.com/OCA/commission/tree/15.0/sale_commission_product_criteria_semaphore
+    :target: https://github.com/OCA/commission/tree/18.0/sale_commission_oca_product_criteria_semaphore
     :alt: OCA/commission
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/commission-15-0/commission-15-0-sale_commission_product_criteria_semaphore
+    :target: https://translation.odoo-community.org/projects/commission-18-0/commission-18-0-sale_commission_oca_product_criteria_semaphore
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/commission&target_branch=15.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/commission&target_branch=18.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module extends ``sale_commission_product_criteria`` so commission rules can
-also be filtered by semaphore status.
+This module extends ``sale_commission_product_criteria`` so commission
+rules can also be filtered by semaphore status.
 
-With it, you can keep the usual product/category-based rules and add more
-specific percentages for lines marked as green, yellow or red in
-``sale_semaphore``. Generic rules without semaphore remain valid as a fallback.
+With it, you can keep the usual product/category-based rules and add
+more specific percentages for lines marked as green, yellow or red in
+``sale_semaphore``. Generic rules without semaphore remain valid as a
+fallback.
 
 **Table of contents**
 
@@ -49,22 +46,22 @@ Usage
 
 To use this module:
 
-#. Install ``sale_commission_product_criteria_semaphore`` together with its
-   dependencies.
-#. Go to **Commissions > Configuration > Commission types** and open or create a
-   commission of type *Product criteria*.
-#. Add commission items as usual and optionally set a **Semaphore** value on
-   each line:
+1. Install ``sale_commission_product_criteria_semaphore`` together with
+   its dependencies.
+2. Go to **Commissions > Configuration > Commission types** and open or
+   create a commission of type *Product criteria*.
+3. Add commission items as usual and optionally set a **Semaphore**
+   value on each line:
 
-   * empty semaphore: fallback rule that applies to any line.
-   * ``🟢`` success: applies only to green lines.
-   * ``🟡`` warning: applies only to yellow lines.
-   * ``🔴`` danger: applies only to red lines.
+   - empty semaphore: fallback rule that applies to any line.
+   - ``🟢`` success: applies only to green lines.
+   - ``🟡`` warning: applies only to yellow lines.
+   - ``🔴`` danger: applies only to red lines.
 
-#. When commissions are generated, the module evaluates both the product
+4. When commissions are generated, the module evaluates both the product
    criteria and the semaphore of the source line.
-#. Settlement lines keep the semaphore value, and the settlement report shows
-   totals grouped by semaphore color.
+5. Settlement lines keep the semaphore value, and the settlement report
+   shows totals grouped by semaphore color.
 
 Bug Tracker
 ===========
@@ -72,7 +69,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/commission/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/commission/issues/new?body=module:%20sale_commission_product_criteria_semaphore%0Aversion:%2015.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/commission/issues/new?body=module:%20sale_commission_oca_product_criteria_semaphore%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -80,20 +77,20 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Tecnativa
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* `Tecnativa <https://www.tecnativa.com>`_:
+- `Tecnativa <https://www.tecnativa.com>`__:
 
-  * Carlos Dauden
-  * Carlos Roca
+  - Carlos Dauden
+  - Carlos Roca
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -113,6 +110,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-CarlosRoca13| 
 
-This module is part of the `OCA/commission <https://github.com/OCA/commission/tree/15.0/sale_commission_product_criteria_semaphore>`_ project on GitHub.
+This module is part of the `OCA/commission <https://github.com/OCA/commission/tree/18.0/sale_commission_oca_product_criteria_semaphore>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
