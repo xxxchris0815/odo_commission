@@ -27,6 +27,7 @@ addon | version | maintainers | summary
 [hr_commission_oca](hr_commission_oca/) | 18.0.1.0.0 |  | HR commissions OCA
 [sale_commission_oca](sale_commission_oca/) | 18.0.1.0.0 | <a href='https://github.com/pedrobaeza'><img src='https://github.com/pedrobaeza.png' width='32' height='32' style='border-radius:50%;' alt='pedrobaeza'/></a> | Sales commissions OCA
 [sale_commission_oca_product_criteria](sale_commission_oca_product_criteria/) | 18.0.1.0.0 | <a href='https://github.com/ilyasProgrammer'><img src='https://github.com/ilyasProgrammer.png' width='32' height='32' style='border-radius:50%;' alt='ilyasProgrammer'/></a> <a href='https://github.com/aleuffre'><img src='https://github.com/aleuffre.png' width='32' height='32' style='border-radius:50%;' alt='aleuffre'/></a> <a href='https://github.com/renda-dev'><img src='https://github.com/renda-dev.png' width='32' height='32' style='border-radius:50%;' alt='renda-dev'/></a> <a href='https://github.com/PicchiSeba'><img src='https://github.com/PicchiSeba.png' width='32' height='32' style='border-radius:50%;' alt='PicchiSeba'/></a> | Advanced commissions rules
+[sale_commission_oca_product_criteria_semaphore](sale_commission_oca_product_criteria_semaphore/) | 18.0.1.0.0 | <a href='https://github.com/CarlosRoca13'><img src='https://github.com/CarlosRoca13.png' width='32' height='32' style='border-radius:50%;' alt='CarlosRoca13'/></a> | Add semaphore for advanced commissions rules
 [sale_commission_salesman](sale_commission_salesman/) | 18.0.1.0.0 |  | Sales commissions from salesman
 
 [//]: # (end addons)
