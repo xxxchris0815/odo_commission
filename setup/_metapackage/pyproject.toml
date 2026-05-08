@@ -1,6 +1,6 @@
 [project]
 name = "odoo-addons-oca-commission"
-version = "18.0.20260410.0"
+version = "18.0.20260508.0"
 dependencies = [
     "odoo-addon-account_commission_oca==18.0.*",
     "odoo-addon-commission_formula_oca==18.0.*",
@@ -9,6 +9,7 @@ dependencies = [
     "odoo-addon-sale_commission_oca==18.0.*",
     "odoo-addon-sale_commission_oca_product_criteria==18.0.*",
     "odoo-addon-sale_commission_oca_product_criteria_semaphore==18.0.*",
+    "odoo-addon-sale_commission_pricelist_oca==18.0.*",
     "odoo-addon-sale_commission_salesman==18.0.*",
 ]
 classifiers=[
