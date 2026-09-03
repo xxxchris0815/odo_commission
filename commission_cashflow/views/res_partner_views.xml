@@ -4,6 +4,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="commission_oca.view_partner_form_agent" />
         <field name="arch" type="xml">
+            <field name="commission_agent_ids" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="commission_id" position="after">
                 <field name="commission_role_ids" nolabel="1" colspan="2">
                     <list editable="bottom">

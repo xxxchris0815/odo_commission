@@ -71,6 +71,19 @@ class AccountInvoiceLineAgent(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    @api.depends("move_id.partner_id")
+    def _compute_agent_ids(self):
+        """Agents are assigned per invoice, not from the customer."""
+        for record in self:
+            if (
+                record.commission_free
+                or not record.product_id
+                or record.move_id.move_type[:3] != "out"
+            ):
+                record.agent_ids = False
+            else:
+                record.agent_ids = record.agent_ids
+
     def _prepare_agent_vals(self, agent):
         vals = super()._prepare_agent_vals(agent)
         roles = agent.commission_role_ids
