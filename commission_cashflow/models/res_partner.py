@@ -58,7 +58,9 @@ class ResPartner(models.Model):
         "Each role has its own commission rule. On a deal, add the same "
         "person once per role that applies (typically three roles per invoice).",
     )
-    # Kept so older partner views still load after a code pull without -u.
+    # Legacy, non-stored: old partner views may still request these names.
+    # Must not be stored — a missing res_partner column breaks login and cron
+    # because every request loads the current user partner.
     agent_role = fields.Selection(
         [
             ("opener", "Opener"),
@@ -66,11 +68,15 @@ class ResPartner(models.Model):
             ("partner", "Partner"),
         ],
         string="Agent Role",
+        store=False,
+        readonly=True,
         help="Legacy field. Use Commission Roles instead.",
     )
     opener_commission_id = fields.Many2one(
         comodel_name="commission",
         string="Opener Commission",
+        store=False,
+        readonly=True,
         help="Legacy field. Use Commission Roles instead.",
     )
 

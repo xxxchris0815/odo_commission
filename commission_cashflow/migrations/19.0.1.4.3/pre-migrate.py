@@ -39,7 +39,5 @@ def migrate(cr, version):
     _add_column(
         cr, "account_invoice_line_agent", "cashflow_settled_amount", "NUMERIC"
     )
-    _add_column(cr, "res_partner", "agent_role", "VARCHAR")
-    _add_column(cr, "res_partner", "opener_commission_id", "INTEGER")
     for table in ("account_invoice_line_agent", "sale_order_line_agent"):
         _drop_unique_constraints(cr, table)
