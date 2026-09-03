@@ -10,16 +10,17 @@ class SaleOrderLine(models.Model):
 
     def _get_commission_from_pricelist(self):
         self.ensure_one()
-        if not self.product_id or not self.order_id.pricelist_id:
+        pricelist = self.order_id.pricelist_id
+        if not self.product_id or not pricelist:
             return False  # pragma: no cover
-        rule_id = self.order_id.pricelist_id._get_product_price_rule(
+        rule_id = pricelist._get_product_price_rule(
             product=self.product_id,
             quantity=self.product_uom_qty or 1.0,
             date=self.order_id.date_order,
-            uom_id=self.product_uom.id,
+            uom=self.product_uom_id,
         )[1]
         rule = self.env["product.pricelist.item"].browse(rule_id)
-        return rule.commission_id
+        return rule.commission_id or pricelist.commission_id
 
     def _prepare_agent_vals(self, agent):
         self.ensure_one()

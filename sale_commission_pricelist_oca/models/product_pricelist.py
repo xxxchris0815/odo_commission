@@ -4,6 +4,18 @@
 from odoo import fields, models
 
 
+class ProductPricelist(models.Model):
+    _inherit = "product.pricelist"
+
+    commission_id = fields.Many2one(
+        comodel_name="commission",
+        string="Commission",
+        ondelete="restrict",
+        help="Default commission applied to lines sold under this pricelist "
+        "when the matched pricelist rule has no commission of its own.",
+    )
+
+
 class ProductPricelistItem(models.Model):
     _inherit = "product.pricelist.item"
 

@@ -1,7 +1,7 @@
 # Copyright 2025 Tecnativa - Carlos Roca
 # License AGPL-3 - See https://www.gnu.org/licenses/agpl-3.0.html
 from odoo import models
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class SaleCommissionLineMixin(models.AbstractModel):
@@ -9,14 +9,14 @@ class SaleCommissionLineMixin(models.AbstractModel):
 
     def _get_commission_items_domain(self, commission, product):
         domain = super()._get_commission_items_domain(commission, product)
-        domain = expression.AND(
+        return Domain.AND(
             [
                 domain,
-                [
-                    "|",
-                    ("semaphore", "=", "False"),
-                    ("semaphore", "=", self.object_id.semaphore),
-                ],
+                Domain.OR(
+                    [
+                        Domain("semaphore", "=", False),
+                        Domain("semaphore", "=", self.object_id.semaphore),
+                    ]
+                ),
             ]
         )
-        return domain

@@ -57,7 +57,7 @@
                         </td>
                         <td class="text-right">
                             <span
-                                t-esc="semaphore_success"
+                                t-out="semaphore_success"
                                 t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
                             />
                         </td>
@@ -68,7 +68,7 @@
                         </td>
                         <td class="text-right">
                             <span
-                                t-esc="semaphore_warning"
+                                t-out="semaphore_warning"
                                 t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
                             />
                         </td>
@@ -79,7 +79,7 @@
                         </td>
                         <td class="text-right">
                             <span
-                                t-esc="semaphore_danger"
+                                t-out="semaphore_danger"
                                 t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
                             />
                         </td>
@@ -90,7 +90,7 @@
                         </td>
                         <td class="text-right">
                             <span
-                                t-esc="semaphore_none"
+                                t-out="semaphore_none"
                                 t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"
                             />
                         </td>
