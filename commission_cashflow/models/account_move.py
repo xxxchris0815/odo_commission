@@ -1,8 +1,42 @@
 from odoo import api, fields, models
 
 
+class CommissionLineMixin(models.AbstractModel):
+    _inherit = "commission.line.mixin"
+
+    _unique_agent = models.Constraint(
+        "UNIQUE(object_id, agent_id, agent_role)",
+        "You can only add one time each agent per role.",
+    )
+
+    agent_role = fields.Selection(
+        [
+            ("closer", "Closer"),
+            ("opener", "Opener"),
+        ],
+        string="Role",
+        default="closer",
+    )
+
+    @api.depends("agent_id", "agent_role")
+    def _compute_commission_id(self):
+        remaining = self.browse()
+        for record in self:
+            commission = self.env["commission"]
+            if record.agent_id and record.agent_role:
+                commission = record.agent_id.get_commission_for_role(record.agent_role)
+            if commission:
+                record.commission_id = commission
+            else:
+                remaining |= record
+        if remaining:
+            super(CommissionLineMixin, remaining)._compute_commission_id()
+
+
 class AccountInvoiceLineAgent(models.Model):
     _inherit = "account.invoice.line.agent"
+
+    agent_role = fields.Selection(required=True, default="closer")
 
     cashflow_settled_amount = fields.Monetary(
         string="Already settled (cashflow)",
@@ -10,34 +44,6 @@ class AccountInvoiceLineAgent(models.Model):
         help="Sum of commission amounts already settled via cashflow for this "
         "agent line. Used to compute the remaining commission on partial payments.",
     )
-    appointment_self_set = fields.Boolean(
-        string="Set the appointment",
-        help="Tick if this closer also set the appointment. "
-        "Adds the agent's opener commission (e.g. 3%) on top of the closer commission.",
-    )
-
-    @api.depends(
-        "object_id.price_subtotal",
-        "object_id.commission_free",
-        "commission_id",
-        "appointment_self_set",
-        "agent_id.opener_commission_id",
-    )
-    def _compute_amount(self):
-        super()._compute_amount()
-        for line in self:
-            if not line.appointment_self_set or not line.agent_id.opener_commission_id:
-                continue
-            inv_line = line.object_id
-            opener_amount = line._get_commission_amount(
-                line.agent_id.opener_commission_id,
-                inv_line.price_subtotal,
-                inv_line.product_id,
-                inv_line.quantity,
-            )
-            if line.invoice_id.move_type and "refund" in line.invoice_id.move_type:
-                opener_amount = -opener_amount
-            line.amount += opener_amount
 
     def _get_cashflow_commission(self, payment_ratio):
         """Return the commission amount proportional to the payment received.
@@ -59,6 +65,18 @@ class AccountInvoiceLineAgent(models.Model):
         if self.env.context.get("cashflow_settlement"):
             return self.invoice_id.state != "posted"
         return super()._skip_settlement()
+
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    def _prepare_agent_vals(self, agent):
+        vals = super()._prepare_agent_vals(agent)
+        closer = agent.get_commission_for_role("closer")
+        if closer:
+            vals["commission_id"] = closer.id
+        vals["agent_role"] = "closer"
+        return vals
 
 
 class AccountPayment(models.Model):

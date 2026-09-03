@@ -4,8 +4,8 @@
         <field name="model">account.invoice.line.agent</field>
         <field name="inherit_id" ref="account_commission_oca.invoice_line_agent_tree" />
         <field name="arch" type="xml">
-            <field name="commission_id" position="after">
-                <field name="appointment_self_set" />
+            <field name="agent_id" position="after">
+                <field name="agent_role" />
             </field>
         </field>
     </record>

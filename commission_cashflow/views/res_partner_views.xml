@@ -4,14 +4,13 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="commission_oca.view_partner_form_agent" />
         <field name="arch" type="xml">
-            <field name="agent_type" position="after">
-                <field name="agent_role" invisible="not agent" />
-            </field>
             <field name="commission_id" position="after">
-                <field
-                    name="opener_commission_id"
-                    invisible="not agent or agent_role != 'closer'"
-                />
+                <field name="commission_role_ids" nolabel="1" colspan="2">
+                    <list editable="bottom">
+                        <field name="role" />
+                        <field name="commission_id" />
+                    </list>
+                </field>
             </field>
         </field>
     </record>
