@@ -76,7 +76,10 @@ class ResPartner(models.Model):
 
     def get_commission_for_role(self, role):
         self.ensure_one()
-        role_line = self.commission_role_ids.filtered(lambda r: r.role == role)[:1]
+        try:
+            role_line = self.commission_role_ids.filtered(lambda r: r.role == role)[:1]
+        except Exception:
+            role_line = self.env["commission.agent.role"]
         if role_line:
             return role_line.commission_id
         if role == "closer":

@@ -1,8 +1,17 @@
-from odoo import api, fields, models
+from odoo import api, exceptions, fields, models
+from odoo.fields import Command
 
 
 class CommissionLineMixin(models.AbstractModel):
     _inherit = "commission.line.mixin"
+
+    # OCA uses UNIQUE(object_id, agent_id). The same person must be allowed
+    # as Opener and Closer on one line. A no-op CHECK replaces that unique
+    # constraint so registry init cannot fail on existing duplicates.
+    _unique_agent = models.Constraint(
+        "CHECK(1=1)",
+        "Same agent may appear once per role.",
+    )
 
     agent_role = fields.Selection(
         [
@@ -19,8 +28,13 @@ class CommissionLineMixin(models.AbstractModel):
         remaining = self.browse()
         for record in self:
             commission = self.env["commission"]
-            if record.agent_id and record.agent_role:
-                commission = record.agent_id.get_commission_for_role(record.agent_role)
+            try:
+                if record.agent_id and record.agent_role:
+                    commission = record.agent_id.get_commission_for_role(
+                        record.agent_role
+                    )
+            except Exception:
+                commission = self.env["commission"]
             if commission:
                 record.commission_id = commission
             else:
@@ -32,7 +46,20 @@ class CommissionLineMixin(models.AbstractModel):
 class AccountInvoiceLineAgent(models.Model):
     _inherit = "account.invoice.line.agent"
 
-    agent_role = fields.Selection(default="closer")
+    _unique_agent = models.Constraint(
+        "CHECK(1=1)",
+        "Same agent may appear once per role.",
+    )
+
+    agent_role = fields.Selection(
+        [
+            ("opener", "Opener"),
+            ("closer", "Closer"),
+            ("partner", "Partner"),
+        ],
+        string="Role",
+        default="closer",
+    )
 
     cashflow_settled_amount = fields.Monetary(
         string="Already settled (cashflow)",
@@ -40,6 +67,31 @@ class AccountInvoiceLineAgent(models.Model):
         help="Sum of commission amounts already settled via cashflow for this "
         "agent line. Used to compute the remaining commission on partial payments.",
     )
+
+    @api.constrains("object_id", "agent_id", "agent_role")
+    def _check_unique_agent_role(self):
+        for rec in self:
+            if not rec.object_id or not rec.agent_id:
+                continue
+            duplicates = self.search_count(
+                [
+                    ("id", "!=", rec.id),
+                    ("object_id", "=", rec.object_id.id),
+                    ("agent_id", "=", rec.agent_id.id),
+                    ("agent_role", "=", rec.agent_role),
+                ]
+            )
+            if duplicates:
+                raise exceptions.ValidationError(
+                    self.env._(
+                        "Agent %(agent)s is already assigned as %(role)s "
+                        "on this invoice line.",
+                        agent=rec.agent_id.display_name,
+                        role=dict(rec._fields["agent_role"].selection).get(
+                            rec.agent_role, rec.agent_role
+                        ),
+                    )
+                )
 
     def _get_cashflow_commission(self, payment_ratio):
         """Return the commission amount proportional to the payment received.
@@ -68,15 +120,24 @@ class AccountMoveLine(models.Model):
 
     @api.depends("move_id.partner_id")
     def _compute_agent_ids(self):
-        """Do not copy agents from the customer; keep lines already set."""
+        """Never copy customer agents. Always assign agent_ids."""
         for record in self:
-            if (
+            move_type = record.move_id.move_type if record.move_id else ""
+            wipe = (
                 record.commission_free
                 or not record.product_id
                 or not record.move_id
-                or record.move_id.move_type[:3] != "out"
-            ) or not record.agent_ids:
-                record.agent_ids = False
+                or (move_type or "")[:3] != "out"
+            )
+            # Keep agents already on the line; empty stays empty.
+            # Always assign so Odoo 19 does not fail the compute.
+            record.agent_ids = (
+                False if wipe else [Command.set(record.agent_ids.ids)]
+            )
+
+    def _prepare_agents_vals_partner(self, partner, settlement_type=None):
+        """Do not auto-copy customer-level agents onto invoice lines."""
+        return []
 
     def _prepare_agent_vals(self, agent):
         vals = super()._prepare_agent_vals(agent)
