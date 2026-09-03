@@ -19,8 +19,9 @@ class CommissionAgentRole(models.Model):
     )
     role = fields.Selection(
         [
-            ("closer", "Closer"),
             ("opener", "Opener"),
+            ("closer", "Closer"),
+            ("partner", "Partner"),
         ],
         required=True,
     )
@@ -53,8 +54,9 @@ class ResPartner(models.Model):
         comodel_name="commission.agent.role",
         inverse_name="agent_id",
         string="Commission Roles",
-        help="An agent can be Closer, Opener, or both. Each role has its own "
-        "commission rule. On a deal, the same person can be added once per role.",
+        help="An agent can have one or more roles: Opener, Closer, Partner. "
+        "Each role has its own commission rule. On a deal, add the same "
+        "person once per role that applies (typically three roles per invoice).",
     )
 
     def get_commission_for_role(self, role):

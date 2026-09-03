@@ -1,8 +1,8 @@
 {
     "name": "Commission on Cashflow",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "summary": "Settle commissions based on actual payment receipts. "
-    "Agents can hold Closer and Opener roles on the same deal.",
+    "Invoice lines can have Opener, Closer and Partner roles.",
     "author": "Custom",
     "license": "AGPL-3",
     "category": "Sales Management",

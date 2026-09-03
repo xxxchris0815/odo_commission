@@ -11,8 +11,9 @@ class CommissionLineMixin(models.AbstractModel):
 
     agent_role = fields.Selection(
         [
-            ("closer", "Closer"),
             ("opener", "Opener"),
+            ("closer", "Closer"),
+            ("partner", "Partner"),
         ],
         string="Role",
         default="closer",
@@ -72,10 +73,15 @@ class AccountMoveLine(models.Model):
 
     def _prepare_agent_vals(self, agent):
         vals = super()._prepare_agent_vals(agent)
+        roles = agent.commission_role_ids
+        if len(roles) == 1:
+            vals["agent_role"] = roles.role
+            vals["commission_id"] = roles.commission_id.id
+            return vals
         closer = agent.get_commission_for_role("closer")
+        vals["agent_role"] = "closer"
         if closer:
             vals["commission_id"] = closer.id
-        vals["agent_role"] = "closer"
         return vals
 
 
