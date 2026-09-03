@@ -7,6 +7,12 @@
             <field name="agent_type" position="after">
                 <field name="agent_role" invisible="not agent" />
             </field>
+            <field name="commission_id" position="after">
+                <field
+                    name="opener_commission_id"
+                    invisible="not agent or agent_role != 'closer'"
+                />
+            </field>
         </field>
     </record>
 </odoo>

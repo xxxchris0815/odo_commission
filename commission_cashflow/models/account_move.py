@@ -10,6 +10,34 @@ class AccountInvoiceLineAgent(models.Model):
         help="Sum of commission amounts already settled via cashflow for this "
         "agent line. Used to compute the remaining commission on partial payments.",
     )
+    appointment_self_set = fields.Boolean(
+        string="Set the appointment",
+        help="Tick if this closer also set the appointment. "
+        "Adds the agent's opener commission (e.g. 3%) on top of the closer commission.",
+    )
+
+    @api.depends(
+        "object_id.price_subtotal",
+        "object_id.commission_free",
+        "commission_id",
+        "appointment_self_set",
+        "agent_id.opener_commission_id",
+    )
+    def _compute_amount(self):
+        super()._compute_amount()
+        for line in self:
+            if not line.appointment_self_set or not line.agent_id.opener_commission_id:
+                continue
+            inv_line = line.object_id
+            opener_amount = line._get_commission_amount(
+                line.agent_id.opener_commission_id,
+                inv_line.price_subtotal,
+                inv_line.product_id,
+                inv_line.quantity,
+            )
+            if line.invoice_id.move_type and "refund" in line.invoice_id.move_type:
+                opener_amount = -opener_amount
+            line.amount += opener_amount
 
     def _get_cashflow_commission(self, payment_ratio):
         """Return the commission amount proportional to the payment received.
