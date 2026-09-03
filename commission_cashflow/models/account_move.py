@@ -4,11 +4,6 @@ from odoo import api, fields, models
 class CommissionLineMixin(models.AbstractModel):
     _inherit = "commission.line.mixin"
 
-    _unique_agent = models.Constraint(
-        "UNIQUE(object_id, agent_id, agent_role)",
-        "You can only add one time each agent per role.",
-    )
-
     agent_role = fields.Selection(
         [
             ("opener", "Opener"),
@@ -37,7 +32,7 @@ class CommissionLineMixin(models.AbstractModel):
 class AccountInvoiceLineAgent(models.Model):
     _inherit = "account.invoice.line.agent"
 
-    agent_role = fields.Selection(required=True, default="closer")
+    agent_role = fields.Selection(default="closer")
 
     cashflow_settled_amount = fields.Monetary(
         string="Already settled (cashflow)",
@@ -73,16 +68,15 @@ class AccountMoveLine(models.Model):
 
     @api.depends("move_id.partner_id")
     def _compute_agent_ids(self):
-        """Agents are assigned per invoice, not from the customer."""
+        """Do not copy agents from the customer; keep lines already set."""
         for record in self:
             if (
                 record.commission_free
                 or not record.product_id
+                or not record.move_id
                 or record.move_id.move_type[:3] != "out"
-            ):
+            ) or not record.agent_ids:
                 record.agent_ids = False
-            else:
-                record.agent_ids = record.agent_ids
 
     def _prepare_agent_vals(self, agent):
         vals = super()._prepare_agent_vals(agent)
