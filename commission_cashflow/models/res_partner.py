@@ -58,6 +58,21 @@ class ResPartner(models.Model):
         "Each role has its own commission rule. On a deal, add the same "
         "person once per role that applies (typically three roles per invoice).",
     )
+    # Kept so older partner views still load after a code pull without -u.
+    agent_role = fields.Selection(
+        [
+            ("opener", "Opener"),
+            ("closer", "Closer"),
+            ("partner", "Partner"),
+        ],
+        string="Agent Role",
+        help="Legacy field. Use Commission Roles instead.",
+    )
+    opener_commission_id = fields.Many2one(
+        comodel_name="commission",
+        string="Opener Commission",
+        help="Legacy field. Use Commission Roles instead.",
+    )
 
     def get_commission_for_role(self, role):
         self.ensure_one()
