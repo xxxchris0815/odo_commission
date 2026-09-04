@@ -209,7 +209,11 @@ class CommissionMakeSettle(models.TransientModel):
     def action_settle(self):
         if self.settlement_type != "cashflow":
             return super().action_settle()
-        res = super().with_context(cashflow_settlement=True).action_settle()
+        # Bind context first, then call the parent. Do not use
+        # super().with_context(...).action_settle() — that re-enters this
+        # method and overflows the stack.
+        self = self.with_context(cashflow_settlement=True)
+        res = super().action_settle()
         extra_ids = self._settle_partner_monthly_staffel()
         if not extra_ids:
             return res
