@@ -3,7 +3,7 @@
 {
     "name": "Sale Commission Product Criteria Semaphore",
     "summary": "Add semaphore for advanced commissions rules",
-    "version": "18.0.1.0.0",
+    "version": "19.0.1.0.0",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "maintainers": ["CarlosRoca13"],
     "website": "https://github.com/OCA/commission",

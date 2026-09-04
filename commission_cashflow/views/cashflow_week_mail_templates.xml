@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template id="cashflow_week_mail">
+        <html>
+            <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </head>
+            <body
+                style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,Helvetica,sans-serif;color:#1f2937;"
+            >
+                <table
+                    role="presentation"
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    style="background:#f4f6f8;padding:24px 12px;"
+                >
+                    <tr>
+                        <td align="center">
+                            <table
+                                role="presentation"
+                                width="640"
+                                cellpadding="0"
+                                cellspacing="0"
+                                style="max-width:640px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb;"
+                            >
+                                <tr>
+                                    <td
+                                        style="background:#111827;color:#ffffff;padding:24px 28px;"
+                                    >
+                                        <div
+                                            style="font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;"
+                                        >
+                                            Cashflow Week
+                                        </div>
+                                        <div
+                                            style="font-size:26px;font-weight:bold;margin-top:6px;line-height:1.2;"
+                                        >
+                                            <t t-esc="year" />
+                                            <span>, CW </span>
+                                            <t t-esc="week" />
+                                        </div>
+                                        <div
+                                            style="font-size:14px;color:#d1d5db;margin-top:8px;"
+                                        >
+                                            <t t-esc="date_from" />
+                                            <span> – </span>
+                                            <t t-esc="date_to" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:20px 20px 8px 20px;">
+                                        <table
+                                            role="presentation"
+                                            width="100%"
+                                            cellpadding="0"
+                                            cellspacing="0"
+                                        >
+                                            <tr>
+                                                <td
+                                                    width="33%"
+                                                    valign="top"
+                                                    style="padding:6px;"
+                                                >
+                                                    <table
+                                                        role="presentation"
+                                                        width="100%"
+                                                        cellpadding="0"
+                                                        cellspacing="0"
+                                                        style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:6px;"
+                                                    >
+                                                        <tr>
+                                                            <td
+                                                                style="padding:14px 16px;"
+                                                            >
+                                                                <div
+                                                                    style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#6b7280;"
+                                                                >
+                                                                    Closings
+                                                                </div>
+                                                                <div
+                                                                    style="font-size:22px;font-weight:bold;margin-top:6px;color:#111827;"
+                                                                >
+                                                                    <t
+                                                                        t-esc="closing_count"
+                                                                    />
+                                                                </div>
+                                                                <div
+                                                                    style="font-size:11px;color:#9ca3af;margin-top:4px;"
+                                                                >
+                                                                    Contract date
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td
+                                                    width="33%"
+                                                    valign="top"
+                                                    style="padding:6px;"
+                                                >
+                                                    <table
+                                                        role="presentation"
+                                                        width="100%"
+                                                        cellpadding="0"
+                                                        cellspacing="0"
+                                                        style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:6px;"
+                                                    >
+                                                        <tr>
+                                                            <td
+                                                                style="padding:14px 16px;"
+                                                            >
+                                                                <div
+                                                                    style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#6b7280;"
+                                                                >
+                                                                    Order Volume
+                                                                </div>
+                                                                <div
+                                                                    style="font-size:22px;font-weight:bold;margin-top:6px;color:#111827;"
+                                                                >
+                                                                    <t
+                                                                        t-esc="order_volume"
+                                                                    />
+                                                                </div>
+                                                                <div
+                                                                    style="font-size:11px;color:#9ca3af;margin-top:4px;"
+                                                                >
+                                                                    Contract date
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td
+                                                    width="33%"
+                                                    valign="top"
+                                                    style="padding:6px;"
+                                                >
+                                                    <table
+                                                        role="presentation"
+                                                        width="100%"
+                                                        cellpadding="0"
+                                                        cellspacing="0"
+                                                        style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:6px;"
+                                                    >
+                                                        <tr>
+                                                            <td
+                                                                style="padding:14px 16px;"
+                                                            >
+                                                                <div
+                                                                    style="font-size:11px;text-transform:uppercase;letter-spacing:0.6px;color:#047857;"
+                                                                >
+                                                                    Cash-Flow In
+                                                                </div>
+                                                                <div
+                                                                    style="font-size:22px;font-weight:bold;margin-top:6px;color:#065f46;"
+                                                                >
+                                                                    <t
+                                                                        t-esc="cashflow_in"
+                                                                    />
+                                                                </div>
+                                                                <div
+                                                                    style="font-size:11px;color:#059669;margin-top:4px;"
+                                                                >
+                                                                    Payment date
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px 26px 24px 26px;">
+                                        <t
+                                            t-call="commission_cashflow.cashflow_week_mail_table"
+                                        >
+                                            <t
+                                                t-set="section_title"
+                                                t-value="product_revenue_title"
+                                            />
+                                            <t
+                                                t-set="name_header"
+                                                t-value="product_name_header"
+                                            />
+                                            <t t-set="rows" t-value="product_revenue" />
+                                        </t>
+                                        <t
+                                            t-call="commission_cashflow.cashflow_week_mail_table"
+                                        >
+                                            <t
+                                                t-set="section_title"
+                                                t-value="closer_revenue_title"
+                                            />
+                                            <t
+                                                t-set="name_header"
+                                                t-value="closer_name_header"
+                                            />
+                                            <t t-set="rows" t-value="closer_revenue" />
+                                        </t>
+                                        <t
+                                            t-call="commission_cashflow.cashflow_week_mail_table"
+                                        >
+                                            <t
+                                                t-set="section_title"
+                                                t-value="product_cashflow_title"
+                                            />
+                                            <t
+                                                t-set="name_header"
+                                                t-value="product_name_header"
+                                            />
+                                            <t
+                                                t-set="rows"
+                                                t-value="product_cashflow"
+                                            />
+                                        </t>
+                                        <t t-if="filter_names">
+                                            <div
+                                                style="margin-top:8px;font-size:12px;color:#6b7280;"
+                                            >
+                                                Filter:
+                                                <t t-esc="filter_names" />
+                                            </div>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="padding:14px 28px;background:#f9fafb;border-top:1px solid #e5e7eb;font-size:11px;color:#9ca3af;"
+                                    >
+                                        <t t-esc="company.display_name" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+        </html>
+    </template>
+    <template id="cashflow_week_mail_table">
+        <div style="margin:18px 0 0 0;">
+            <div
+                style="font-size:13px;font-weight:bold;color:#111827;margin:0 0 8px 0;"
+            >
+                <t t-esc="section_title" />
+            </div>
+            <table
+                role="presentation"
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                style="border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;"
+            >
+                <tr style="background:#f3f4f6;">
+                    <th
+                        align="left"
+                        style="padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;color:#6b7280;border-bottom:1px solid #e5e7eb;"
+                    >
+                        <t t-esc="name_header" />
+                    </th>
+                    <th
+                        align="right"
+                        style="padding:8px 12px;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;color:#6b7280;border-bottom:1px solid #e5e7eb;"
+                    >
+                        Amount
+                    </th>
+                </tr>
+                <t t-if="not rows">
+                    <tr>
+                        <td
+                            colspan="2"
+                            style="padding:12px;font-size:13px;color:#9ca3af;font-style:italic;"
+                        >
+                            No data
+                        </td>
+                    </tr>
+                </t>
+                <t t-foreach="rows" t-as="row">
+                    <tr
+                        t-attf-style="background: #{'#f9fafb' if row_index % 2 else '#ffffff'};"
+                    >
+                        <td
+                            style="padding:8px 12px;font-size:13px;border-bottom:1px solid #f3f4f6;"
+                        >
+                            <t t-esc="row['name']" />
+                        </td>
+                        <td
+                            align="right"
+                            style="padding:8px 12px;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;border-bottom:1px solid #f3f4f6;"
+                        >
+                            <t t-esc="row['amount']" />
+                        </td>
+                    </tr>
+                </t>
+            </table>
+        </div>
+    </template>
+</odoo>

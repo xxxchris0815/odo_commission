@@ -1,0 +1,403 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* commission_cashflow
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-04 12:00+0000\n"
+"PO-Revision-Date: 2026-09-04 12:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid ", CW "
+msgstr ", KW "
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail_table
+msgid "Amount"
+msgstr "Betrag"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_account_invoice_line_agent__cashflow_settled_amount
+msgid "Already settled (cashflow)"
+msgstr "Bereits abgerechnet (Cashflow)"
+
+#. module: commission_cashflow
+#: model:ir.model.constraint,message:commission_cashflow.constraint_commission_agent_role_unique_agent_role
+msgid "An agent can only have one commission per role."
+msgstr "Ein Vermittler kann pro Rolle nur eine Provision haben."
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_res_partner__commission_role_ids
+msgid ""
+"An agent can have one or more roles: Opener, Closer, Partner. Each role has "
+"its own commission rule. On a deal, add the same person once per role that "
+"applies (typically three roles per invoice). Partner staffel (By sections) "
+"is calculated from the monthly cashflow of all invoices where this agent is "
+"Partner, not from a single invoice."
+msgstr ""
+"Ein Vermittler kann eine oder mehrere Rollen haben: Opener, Closer, Partner. "
+"Jede Rolle hat eine eigene Provisionsregel. Pro Abschluss denselben "
+"Vermittler einmal je zutreffender Rolle erfassen (üblicherweise drei Rollen "
+"pro Rechnung). Die Partner-Staffel (Nach Abschnitten) wird aus dem "
+"monatlichen Cashflow aller Rechnungen berechnet, in denen dieser Vermittler "
+"Partner ist, nicht aus einer einzelnen Rechnung."
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/models/account_move.py:0
+msgid ""
+"Agent %(agent)s is already assigned as %(role)s on this invoice line. Use a "
+"different role (Opener, Closer, Partner)."
+msgstr ""
+"Vermittler %(agent)s ist auf dieser Rechnungszeile bereits als %(role)s "
+"zugeordnet. Bitte eine andere Rolle verwenden (Opener, Closer, Partner)."
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_res_partner__agent_role
+msgid "Agent Role"
+msgstr "Vermittlerrolle"
+
+#. module: commission_cashflow
+#: model:ir.actions.act_window,name:commission_cashflow.action_commission_cashflow_week
+#: model:ir.ui.menu,name:commission_cashflow.menu_commission_cashflow_week
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Cashflow Week"
+msgstr "Cashflow Woche"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+msgid "Cashflow Week %(year)s, CW %(week)s"
+msgstr "Cashflow Woche %(year)s, KW %(week)s"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__product_cashflow_ids
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_cashflow_week_line__line_type__product_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Cash-Flow by Product"
+msgstr "Cash-Flow nach Produkt"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__cashflow_in
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Cash-Flow In"
+msgstr "Cash-Flow In"
+
+#. module: commission_cashflow
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_make_settle__settlement_type__cashflow
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_settlement__settlement_type__cashflow
+msgid "Cashflow (Payments)"
+msgstr "Cashflow (Zahlungen)"
+
+#. module: commission_cashflow
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__account_invoice_line_agent__agent_role__closer
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_agent_role__role__closer
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__res_partner__agent_role__closer
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Closer"
+msgstr "Closer"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__closing_count
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Closings"
+msgstr "Abschlüsse"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Closings (contract date)"
+msgstr "Abschlüsse (Vertragsdatum)"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/models/account_move.py:0
+msgid "Comm. free"
+msgstr "Prov.-frei"
+
+#. module: commission_cashflow
+#: model:ir.module.module,shortdesc:base.module_commission_cashflow
+msgid "Commission on Cashflow"
+msgstr "Provision auf Cashflow"
+
+#. module: commission_cashflow
+#: model:ir.model,name:commission_cashflow.model_commission_agent_role
+msgid "Commission role of an agent"
+msgstr "Provisionsrolle eines Vermittlers"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_res_partner__commission_role_ids
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_partner_form_agent_role
+msgid "Commission Roles"
+msgstr "Provisionsrollen"
+
+#. module: commission_cashflow
+#: model:ir.cron,cron_name:commission_cashflow.ir_cron_cashflow_week_mail
+#: model:ir.actions.server,name:commission_cashflow.ir_cron_cashflow_week_mail
+msgid "Commission: weekly cashflow email"
+msgstr "Provision: wöchentliche Cashflow-E-Mail"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_account_move__contract_date
+msgid "Contract Date"
+msgstr "Vertragsabschluss"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Contract date"
+msgstr "Vertragsdatum"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/commission_make_settle.py:0
+msgid "Created Settlements"
+msgstr "Erstellte Abrechnungen"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_account_move__contract_date
+msgid ""
+"Date the deal was closed. Weekly closings and order volume use this date. "
+"Cashflow uses the payment date. If empty, the invoice date is used."
+msgstr ""
+"Datum des Vertragsabschlusses. Wöchentliche Abschlüsse und das "
+"Auftragsvolumen nutzen dieses Datum. Der Cashflow nutzt das Zahlungsdatum. "
+"Wenn leer, wird das Rechnungsdatum verwendet."
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__mail_product_ids
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Default Filter for Monday Email"
+msgstr "Standardfilter für Montagsversand"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_res_company__cashflow_week_mail_auto
+msgid ""
+"Every Monday, send the previous ISO week to the recipients. No mail is sent "
+"if this is off or if no recipient has an email."
+msgstr ""
+"Jeden Montag die vorherige ISO-Woche an die Empfänger senden. Ohne diesen "
+"Haken oder ohne Empfänger mit E-Mail-Adresse wird nichts versendet."
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_res_company__cashflow_week_mail_auto
+msgid "Email weekly cashflow automatically"
+msgstr "Wöchentlichen Cashflow automatisch per E-Mail senden"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+msgid "Email sent"
+msgstr "E-Mail gesendet"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_res_partner__agent_role
+#: model:ir.model.fields,help:commission_cashflow.field_res_partner__opener_commission_id
+msgid "Legacy field. Use Commission Roles instead."
+msgstr "Altes Feld. Stattdessen Provisionsrollen verwenden."
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_commission_cashflow_week__mail_product_ids
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid ""
+"Leave empty for all products. Applies only to the automatic Monday email. "
+"The Send Email button uses the product filter above."
+msgstr ""
+"Leer = alle Produkte. Gilt nur für den automatischen Montagsversand. Der "
+"Button „E-Mail senden“ nutzt den Produktfilter oben."
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Next Week"
+msgstr "Nächste Woche"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+msgid "No closer"
+msgstr "Kein Closer"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail_table
+msgid "No data"
+msgstr "Keine Daten"
+
+#. module: commission_cashflow
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__account_invoice_line_agent__agent_role__opener
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_agent_role__role__opener
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__res_partner__agent_role__opener
+msgid "Opener"
+msgstr "Opener"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_res_partner__opener_commission_id
+msgid "Opener Commission"
+msgstr "Opener-Provision"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__order_volume
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Order Volume"
+msgstr "Auftragsvolumen"
+
+#. module: commission_cashflow
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__account_invoice_line_agent__agent_role__partner
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_agent_role__role__partner
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__res_partner__agent_role__partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_account_invoice_line_agent__monthly_staffel
+msgid ""
+"Partner staffel uses monthly cashflow across all invoices, not this invoice "
+"amount."
+msgstr ""
+"Die Partner-Staffel nutzt den monatlichen Cashflow über alle Rechnungen, "
+"nicht den Betrag dieser Rechnung."
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Filter:"
+msgstr "Filter:"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Payment date"
+msgstr "Zahlungsdatum"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Payments"
+msgstr "Zahlungen"
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+msgid "Please set at least one recipient with an email address."
+msgstr "Bitte mindestens einen Empfänger mit E-Mail-Adresse setzen."
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Previous Week"
+msgstr "Vorherige Woche"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Product"
+msgstr "Produkt"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__product_ids
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Product Filter"
+msgstr "Produktfilter"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Refresh"
+msgstr "Aktualisieren"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__mail_partner_ids
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Recipients"
+msgstr "Empfänger"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__closer_revenue_ids
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_cashflow_week_line__line_type__closer_revenue
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Revenue by Closer"
+msgstr "Umsatz nach Closer"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__product_revenue_ids
+#: model:ir.model.fields.selection,name:commission_cashflow.selection__commission_cashflow_week_line__line_type__product_revenue
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Revenue by Product"
+msgstr "Umsatz nach Produkt"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_account_invoice_line_agent__agent_role
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_line_mixin__agent_role
+msgid "Role"
+msgstr "Rolle"
+
+#. module: commission_cashflow
+#: model:ir.model.constraint,message:commission_cashflow.constraint_commission_line_mixin_unique_agent
+#: model:ir.model.constraint,message:commission_cashflow.constraint_account_invoice_line_agent_unique_agent
+msgid "Same agent may appear once per role."
+msgstr "Derselbe Vermittler darf je Rolle nur einmal vorkommen."
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Send Email"
+msgstr "E-Mail senden"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__mail_auto
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Send every Monday"
+msgstr "Jeden Montag automatisch senden"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,help:commission_cashflow.field_account_invoice_line_agent__cashflow_settled_amount
+msgid ""
+"Sum of non-cancelled cashflow settlement lines for this agent line. Deleting "
+"a settlement resets this automatically."
+msgstr ""
+"Summe der nicht stornierten Cashflow-Abrechnungszeilen für diese "
+"Vermittlerzeile. Das Löschen einer Abrechnung setzt den Wert automatisch "
+"zurück."
+
+#. module: commission_cashflow
+#. odoo-python
+#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+msgid "The weekly cashflow email was sent."
+msgstr "Die Cashflow-Woche wurde per E-Mail versendet."
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_move_form_commission_agents_label
+msgid "View / edit agents"
+msgstr "Vermittler anzeigen / bearbeiten"
+
+#. module: commission_cashflow
+#: model:ir.model,name:commission_cashflow.model_commission_cashflow_week
+msgid "Weekly cashflow analysis"
+msgstr "Wöchentliche Cashflow-Auswertung"
+
+#. module: commission_cashflow
+#: model:ir.model,name:commission_cashflow.model_commission_cashflow_week_line
+msgid "Weekly cashflow analysis line"
+msgstr "Zeile der wöchentlichen Cashflow-Auswertung"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+msgid "Weekly Email"
+msgstr "Wöchentliche E-Mail"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_res_company__cashflow_week_mail_partner_ids
+msgid "Weekly cashflow mail to"
+msgstr "Wöchentliche Cashflow-E-Mail an"
+
+#. module: commission_cashflow
+#: model:ir.model.fields,field_description:commission_cashflow.field_res_company__cashflow_week_mail_product_ids
+msgid "Weekly cashflow product filter"
+msgstr "Produktfilter für wöchentliche Cashflow-E-Mail"

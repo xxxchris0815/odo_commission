@@ -251,12 +251,16 @@ class CommissionItem(models.Model):
             applied_on = values["applied_on"]
             if applied_on == "3_global":
                 values.update(
-                    dict(product_id=None, product_tmpl_id=None, categ_id=None)
+                    {
+                        "product_id": None,
+                        "product_tmpl_id": None,
+                        "categ_id": None,
+                    }
                 )
             elif applied_on == "2_product_category":
-                values.update(dict(product_id=None, product_tmpl_id=None))
+                values.update({"product_id": None, "product_tmpl_id": None})
             elif applied_on == "1_product":
-                values.update(dict(product_id=None, categ_id=None))
+                values.update({"product_id": None, "categ_id": None})
             elif applied_on == "0_product_variant":
-                values.update(dict(categ_id=None))
+                values.update({"categ_id": None})
         return values

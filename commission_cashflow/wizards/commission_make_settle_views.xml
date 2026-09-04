@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!-- The cashflow selection is automatically available via selection_add -->
+</odoo>

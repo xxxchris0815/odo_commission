@@ -1,20 +1,20 @@
 [project]
 name = "odoo-addons-oca-commission"
-version = "18.0.20260727.0"
+version = "19.0.20260902.0"
 dependencies = [
-    "odoo-addon-account_commission_oca==18.0.*",
-    "odoo-addon-commission_formula_oca==18.0.*",
-    "odoo-addon-commission_oca==18.0.*",
-    "odoo-addon-hr_commission_oca==18.0.*",
-    "odoo-addon-sale_commission_margin_oca==18.0.*",
-    "odoo-addon-sale_commission_oca==18.0.*",
-    "odoo-addon-sale_commission_oca_product_criteria==18.0.*",
-    "odoo-addon-sale_commission_oca_product_criteria_semaphore==18.0.*",
-    "odoo-addon-sale_commission_pricelist_oca==18.0.*",
-    "odoo-addon-sale_commission_salesman==18.0.*",
+    "odoo-addon-account_commission_oca==19.0.*",
+    "odoo-addon-commission_formula_oca==19.0.*",
+    "odoo-addon-commission_oca==19.0.*",
+    "odoo-addon-hr_commission_oca==19.0.*",
+    "odoo-addon-sale_commission_margin_oca==19.0.*",
+    "odoo-addon-sale_commission_oca==19.0.*",
+    "odoo-addon-sale_commission_oca_product_criteria==19.0.*",
+    "odoo-addon-sale_commission_oca_product_criteria_semaphore==19.0.*",
+    "odoo-addon-sale_commission_pricelist_oca==19.0.*",
+    "odoo-addon-sale_commission_salesman==19.0.*",
 ]
 classifiers=[
     "Programming Language :: Python",
     "Framework :: Odoo",
-    "Framework :: Odoo :: 18.0",
+    "Framework :: Odoo :: 19.0",
 ]

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="invoice_line_agent_tree_cashflow" model="ir.ui.view">
+        <field name="model">account.invoice.line.agent</field>
+        <field name="inherit_id" ref="account_commission_oca.invoice_line_agent_tree" />
+        <field name="arch" type="xml">
+            <field name="agent_id" position="after">
+                <field name="agent_role" required="1" />
+            </field>
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-muted">monthly_staffel</attribute>
+            </xpath>
+            <xpath expr="//list" position="inside">
+                <field name="monthly_staffel" column_invisible="1" />
+            </xpath>
+        </field>
+    </record>
+    <record id="view_move_form_commission_agents_label" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account_commission_oca.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='invoice_line_ids']/list//button[@name='button_edit_agents']"
+                position="attributes"
+            >
+                <attribute name="invisible">commission_free</attribute>
+                <attribute name="title">View / edit agents</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_move_form_contract_date" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="invoice_date" position="after">
+                <field
+                    name="contract_date"
+                    invisible="move_type not in ('out_invoice', 'out_refund')"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

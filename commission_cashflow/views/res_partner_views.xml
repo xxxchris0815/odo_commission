@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_partner_form_agent_role" model="ir.ui.view">
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="commission_oca.view_partner_form_agent" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//page[@name='agent_information']//field[@name='commission_id']"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+                <attribute name="required">0</attribute>
+            </xpath>
+            <xpath
+                expr="//page[@name='agent_information']//field[@name='commission_id']"
+                position="after"
+            >
+                <field
+                    name="commission_role_ids"
+                    nolabel="1"
+                    colspan="2"
+                    string="Commission Roles"
+                >
+                    <list editable="bottom">
+                        <field name="role" />
+                        <field name="commission_id" />
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>
