@@ -266,13 +266,19 @@ class CommissionCashflowWeek(models.TransientModel):
             )
         if vals_list:
             self.env["commission.cashflow.week.line"].create(vals_list)
-        return {
-            "type": "ir.actions.act_window",
-            "res_model": self._name,
-            "res_id": self.id,
-            "view_mode": "form",
-            "target": "current",
-        }
+        return self._reopen_form()
+
+    def _reopen_form(self):
+        """Reload this transient form. Odoo 19 requires an explicit views list."""
+        self.ensure_one()
+        action = self.env.ref(
+            "commission_cashflow.action_commission_cashflow_week"
+        )._get_action_dict()
+        action["res_id"] = self.id
+        action["views"] = [(False, "form")]
+        action["view_mode"] = "form"
+        action["target"] = "current"
+        return action
 
     def _fmt_amount(self, amount):
         return formatLang(
@@ -382,13 +388,8 @@ class CommissionCashflowWeek(models.TransientModel):
                 "title": self.env._("Email sent"),
                 "message": self.env._("The weekly cashflow email was sent."),
                 "type": "success",
-                "next": {
-                    "type": "ir.actions.act_window",
-                    "res_model": self._name,
-                    "res_id": self.id,
-                    "view_mode": "form",
-                    "target": "current",
-                },
+                "sticky": False,
+                "next": self._reopen_form(),
             },
         }
 
