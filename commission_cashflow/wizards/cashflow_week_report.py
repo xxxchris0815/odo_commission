@@ -3,7 +3,7 @@ from html import escape
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from odoo.tools.misc import formatLang
+from odoo.tools.misc import formatLang, format_date
 
 
 class CommissionCashflowWeek(models.TransientModel):
@@ -21,51 +21,51 @@ class CommissionCashflowWeek(models.TransientModel):
     )
     product_ids = fields.Many2many(
         comodel_name="product.product",
-        string="Product filter",
+        string="Product Filter",
     )
     mail_partner_ids = fields.Many2many(
         comodel_name="res.partner",
         compute="_compute_mail_settings",
         inverse="_inverse_mail_settings",
-        string="Email to",
+        string="Recipients",
     )
     mail_product_ids = fields.Many2many(
         comodel_name="product.product",
         compute="_compute_mail_settings",
         inverse="_inverse_mail_settings",
-        string="Default product filter for Monday email",
-        help="Used by the automatic Monday email. The Send email button uses "
-        "the product filter of this form.",
+        string="Default Filter for Monday Email",
+        help="Leave empty for all products. Applies only to the automatic "
+        "Monday email. The Send Email button uses the product filter above.",
     )
     mail_auto = fields.Boolean(
         compute="_compute_mail_settings",
         inverse="_inverse_mail_settings",
-        string="Send every Monday (previous week)",
+        string="Send every Monday",
     )
     currency_id = fields.Many2one(
         comodel_name="res.currency",
         default=lambda self: self.env.company.currency_id,
     )
-    closing_count = fields.Integer(string="Closings (contract date)")
-    order_volume = fields.Monetary(string="Order volume")
+    closing_count = fields.Integer(string="Closings")
+    order_volume = fields.Monetary(string="Order Volume")
     cashflow_in = fields.Monetary(string="Cash-Flow In")
     product_revenue_ids = fields.One2many(
         comodel_name="commission.cashflow.week.line",
         inverse_name="report_id",
         domain=[("line_type", "=", "product_revenue")],
-        string="Revenue by product",
+        string="Revenue by Product",
     )
     closer_revenue_ids = fields.One2many(
         comodel_name="commission.cashflow.week.line",
         inverse_name="report_id",
         domain=[("line_type", "=", "closer_revenue")],
-        string="Revenue by closer",
+        string="Revenue by Closer",
     )
     product_cashflow_ids = fields.One2many(
         comodel_name="commission.cashflow.week.line",
         inverse_name="report_id",
         domain=[("line_type", "=", "product_cashflow")],
-        string="Cash-Flow by product",
+        string="Cash-Flow by Product",
     )
 
     @api.model
@@ -281,11 +281,20 @@ class CommissionCashflowWeek(models.TransientModel):
 
     def _fmt_section(self, title, items):
         if not items:
-            return f"{title}\nKeine Daten"
+            return f"{title}\n{self.env._('No data')}"
         lines = [title]
         for name, amount in items:
             lines.append(f"    {name}: {self._fmt_amount(amount)}")
         return "\n".join(lines)
+
+    def _mail_lang(self, partners=None):
+        self.ensure_one()
+        partners = partners if partners is not None else self.mail_partner_ids
+        return (
+            (partners[:1].lang if partners else False)
+            or (self.company_id.partner_id.lang if self.company_id else False)
+            or self.env.lang
+        )
 
     def _render_week_email_body(self, data=None):
         self.ensure_one()
@@ -293,21 +302,37 @@ class CommissionCashflowWeek(models.TransientModel):
             data = self._collect_week_data(
                 self.date_from, self.date_to, self.product_ids
             )
-        date_from = self.date_from.strftime("%d.%m.%Y")
-        date_to = self.date_to.strftime("%d.%m.%Y")
+        date_from = format_date(self.env, self.date_from)
+        date_to = format_date(self.env, self.date_to)
         filter_names = ", ".join(self.product_ids.mapped("display_name"))
-        body = (
-            f"{self.year}, CW: {self.week}\n"
-            f"Date: {date_from} - {date_to}\n"
-            f"Abschlüsse (Vertragsdatum):\t{data['closing_count']}\n"
-            f"Auftragsvolumen:\t{self._fmt_amount(data['order_volume'])}\n"
-            f"Cash-Flow In:\t{self._fmt_amount(data['cashflow_in'])}\n"
-            f"{self._fmt_section('📦 Umsatz nach Produkt', data['product_revenue'])}\n"
-            f"{self._fmt_section('👤 Umsatz nach Closer', data['closer_revenue'])}\n"
-            f"{self._fmt_section('💰 Cash-Flow nach Produkt', data['product_cashflow'])}\n"
+        body = self.env._(
+            "%(year)s, CW: %(week)s\n"
+            "Date: %(date_from)s - %(date_to)s\n"
+            "Closings (contract date):\t%(closings)s\n"
+            "Order volume:\t%(order_volume)s\n"
+            "Cash-Flow In:\t%(cashflow_in)s\n"
+            "%(product_revenue)s\n"
+            "%(closer_revenue)s\n"
+            "%(product_cashflow)s\n",
+            year=self.year,
+            week=self.week,
+            date_from=date_from,
+            date_to=date_to,
+            closings=data["closing_count"],
+            order_volume=self._fmt_amount(data["order_volume"]),
+            cashflow_in=self._fmt_amount(data["cashflow_in"]),
+            product_revenue=self._fmt_section(
+                self.env._("📦 Revenue by product"), data["product_revenue"]
+            ),
+            closer_revenue=self._fmt_section(
+                self.env._("👤 Revenue by closer"), data["closer_revenue"]
+            ),
+            product_cashflow=self._fmt_section(
+                self.env._("💰 Cash-Flow by product"), data["product_cashflow"]
+            ),
         )
         if filter_names:
-            body += f"\nFilter: {filter_names}\n"
+            body += self.env._("\nFilter: %(filter)s\n", filter=filter_names)
         return body
 
     def _send_week_mail(self):
@@ -316,16 +341,17 @@ class CommissionCashflowWeek(models.TransientModel):
         if not partners:
             raise UserError(
                 self.env._(
-                    "Bitte mindestens einen Empfänger mit E-Mail-Adresse setzen."
+                    "Please set at least one recipient with an email address."
                 )
             )
         self._set_week_dates()
-        data = self._collect_week_data(
+        mailer = self.with_context(lang=self._mail_lang(partners))
+        data = mailer._collect_week_data(
             self.date_from, self.date_to, self.product_ids
         )
-        body = self._render_week_email_body(data)
-        subject = self.env._(
-            "Cashflow Woche %(year)s, CW %(week)s",
+        body = mailer._render_week_email_body(data)
+        subject = mailer.env._(
+            "Cashflow Week %(year)s, CW %(week)s",
             year=self.year,
             week=self.week,
         )
@@ -353,10 +379,8 @@ class CommissionCashflowWeek(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": self.env._("E-Mail gesendet"),
-                "message": self.env._(
-                    "Die Cashflow-Woche wurde per E-Mail versendet."
-                ),
+                "title": self.env._("Email sent"),
+                "message": self.env._("The weekly cashflow email was sent."),
                 "type": "success",
                 "next": {
                     "type": "ir.actions.act_window",
@@ -406,9 +430,9 @@ class CommissionCashflowWeekLine(models.TransientModel):
     )
     line_type = fields.Selection(
         [
-            ("product_revenue", "Revenue by product"),
-            ("closer_revenue", "Revenue by closer"),
-            ("product_cashflow", "Cash-Flow by product"),
+            ("product_revenue", "Revenue by Product"),
+            ("closer_revenue", "Revenue by Closer"),
+            ("product_cashflow", "Cash-Flow by Product"),
         ],
         required=True,
     )

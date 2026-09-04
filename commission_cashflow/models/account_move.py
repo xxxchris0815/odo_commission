@@ -260,7 +260,7 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     contract_date = fields.Date(
-        string="Vertragsabschluss",
+        string="Contract Date",
         help="Date the deal was closed. Weekly closings and order volume "
         "use this date. Cashflow uses the payment date. If empty, the "
         "invoice date is used.",
@@ -312,8 +312,7 @@ class AccountMoveLine(models.Model):
     def _compute_commission_status(self):
         role_labels = dict(
             self.env["account.invoice.line.agent"]
-            ._fields["agent_role"]
-            .selection
+            .fields_get(["agent_role"])["agent_role"]["selection"]
         )
         remaining = self.browse()
         for line in self:

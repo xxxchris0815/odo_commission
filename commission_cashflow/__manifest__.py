@@ -1,6 +1,6 @@
 {
     "name": "Commission on Cashflow",
-    "version": "19.0.1.7.0",
+    "version": "19.0.1.8.0",
     "summary": "Settle commissions based on actual payment receipts. "
     "Invoice lines can have Opener, Closer and Partner roles.",
     "author": "Custom",

@@ -4,35 +4,35 @@
         <field name="name">commission.cashflow.week.form</field>
         <field name="model">commission.cashflow.week</field>
         <field name="arch" type="xml">
-            <form string="Cashflow Woche">
+            <form string="Cashflow Week">
                 <header>
                     <button
                         name="action_prev_week"
                         type="object"
-                        string="Vorherige Woche"
+                        string="Previous Week"
                     />
                     <button
                         name="action_refresh"
                         type="object"
                         class="btn-primary"
-                        string="Aktualisieren"
+                        string="Refresh"
                     />
                     <button
                         name="action_next_week"
                         type="object"
-                        string="Nächste Woche"
+                        string="Next Week"
                     />
                     <button
                         name="action_send_mail"
                         type="object"
-                        string="E-Mail senden"
+                        string="Send Email"
                     />
                 </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
                             <field name="year" class="oe_inline" />
-                            <span>, KW </span>
+                            <span>, CW </span>
                             <field name="week" class="oe_inline" />
                         </h1>
                         <h3>
@@ -47,56 +47,56 @@
                             <field
                                 name="product_ids"
                                 widget="many2many_tags"
-                                string="Filter Produkte"
+                                string="Product Filter"
                                 options="{'no_create': True}"
                             />
                         </group>
                     </group>
                     <group>
-                        <group string="Abschlüsse (Vertragsdatum)">
-                            <field name="closing_count" string="Abschlüsse" />
-                            <field name="order_volume" string="Auftragsvolumen" />
+                        <group string="Closings (contract date)">
+                            <field name="closing_count" string="Closings" />
+                            <field name="order_volume" string="Order Volume" />
                         </group>
-                        <group string="Zahlungen">
+                        <group string="Payments">
                             <field name="cashflow_in" string="Cash-Flow In" />
                             <field name="currency_id" invisible="1" />
                         </group>
                     </group>
-                    <group string="Wöchentliche E-Mail">
+                    <group string="Weekly Email">
                         <group>
                             <field
                                 name="mail_partner_ids"
                                 widget="many2many_tags"
-                                string="Empfänger"
+                                string="Recipients"
                                 options="{'no_create': True}"
                             />
                             <field
                                 name="mail_auto"
-                                string="Jeden Montag automatisch senden"
+                                string="Send every Monday"
                             />
                         </group>
                         <group>
                             <field
                                 name="mail_product_ids"
                                 widget="many2many_tags"
-                                string="Standardfilter für Montagsversand"
+                                string="Default Filter for Monday Email"
                                 options="{'no_create': True}"
-                                help="Leer = alle Produkte. Gilt nur für den automatischen Montagsversand. Der Button „E-Mail senden“ nutzt den Filter oben."
+                                help="Leave empty for all products. Applies only to the automatic Monday email. The Send Email button uses the product filter above."
                             />
                         </group>
                     </group>
                     <notebook>
-                        <page string="Umsatz nach Produkt" name="product_revenue">
+                        <page string="Revenue by Product" name="product_revenue">
                             <field name="product_revenue_ids" nolabel="1">
                                 <list create="0" delete="0">
-                                    <field name="name" string="Produkt" />
+                                    <field name="name" string="Product" />
                                     <field name="amount" sum="Total" />
                                     <field name="line_type" column_invisible="1" />
                                     <field name="currency_id" column_invisible="1" />
                                 </list>
                             </field>
                         </page>
-                        <page string="Umsatz nach Closer" name="closer_revenue">
+                        <page string="Revenue by Closer" name="closer_revenue">
                             <field name="closer_revenue_ids" nolabel="1">
                                 <list create="0" delete="0">
                                     <field name="name" string="Closer" />
@@ -106,10 +106,10 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Cash-Flow nach Produkt" name="product_cashflow">
+                        <page string="Cash-Flow by Product" name="product_cashflow">
                             <field name="product_cashflow_ids" nolabel="1">
                                 <list create="0" delete="0">
-                                    <field name="name" string="Produkt" />
+                                    <field name="name" string="Product" />
                                     <field name="amount" sum="Total" />
                                     <field name="line_type" column_invisible="1" />
                                     <field name="currency_id" column_invisible="1" />
@@ -122,7 +122,7 @@
         </field>
     </record>
     <record id="action_commission_cashflow_week" model="ir.actions.act_window">
-        <field name="name">Cashflow Woche</field>
+        <field name="name">Cashflow Week</field>
         <field name="res_model">commission.cashflow.week</field>
         <field name="view_mode">form</field>
         <field name="target">current</field>
@@ -130,7 +130,7 @@
     </record>
     <menuitem
         id="menu_commission_cashflow_week"
-        name="Cashflow Woche"
+        name="Cashflow Week"
         parent="commission_oca.menu_commission"
         action="action_commission_cashflow_week"
         sequence="25"
