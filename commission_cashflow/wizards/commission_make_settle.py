@@ -1,4 +1,6 @@
-from datetime import timedelta
+from datetime import date, timedelta
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import fields, models
 from odoo.fields import Domain
@@ -12,20 +14,34 @@ class CommissionMakeSettle(models.TransientModel):
         ondelete={"cashflow": "cascade"},
     )
 
-    def _get_cashflow_agent_lines(self, agent, date_to_agent):
-        """Return invoice agent lines that have at least partial payment
-        in the relevant period and are not yet fully settled via cashflow.
+    def _get_period_start(self, agent, date_to):
+        res = super()._get_period_start(agent, date_to)
+        if res or not date_to:
+            return res
+        # Agents without a settlement period still get a monthly window.
+        return date(year=date_to.year, month=date_to.month, day=1)
 
-        Partner staffel lines are handled separately: their base is the
-        monthly cashflow across all invoices, not a single invoice.
+    def _get_next_period_date(self, agent, current_date):
+        res = super()._get_next_period_date(agent, current_date)
+        if res or not current_date:
+            return res
+        return current_date + relativedelta(months=1)
+
+    def _get_cashflow_agent_lines(self, agent, date_to_agent):
+        """Return opener/closer lines with actual payments up to date_to.
+
+        OCA invoice settlements only take invoices *before* the current
+        period start. Cashflow must include the current month, otherwise
+        only the Partner staffel (which uses its own date window) appears.
         """
+        date_limit = self.date_to or date_to_agent
         domain = Domain.AND(
             [
                 Domain("agent_id", "=", agent.id),
                 Domain("settled", "=", False),
                 Domain("invoice_id.state", "=", "posted"),
                 Domain("object_id.display_type", "=", "product"),
-                Domain("invoice_date", "<", date_to_agent),
+                Domain("invoice_date", "<=", date_limit),
             ]
         )
         candidates = self.env["account.invoice.line.agent"].search(
@@ -36,7 +52,8 @@ class CommissionMakeSettle(models.TransientModel):
             if line._is_monthly_partner_staffel():
                 continue
             invoice = line.invoice_id
-            if invoice.payment_state in ("partial", "in_payment", "paid", "reversed"):
+            paid = invoice.amount_total - invoice.amount_residual
+            if paid > 0.01:
                 result |= line
         return result
 
