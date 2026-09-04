@@ -2,6 +2,13 @@ from odoo import api, exceptions, fields, models
 from odoo.fields import Command
 
 
+def _ensure_column(cr, table, column, definition):
+    """Add a DB column on restart so git pull without -u cannot crash Odoo."""
+    cr.execute(
+        f'ALTER TABLE "{table}" ADD COLUMN IF NOT EXISTS "{column}" {definition}'
+    )
+
+
 class CommissionLineMixin(models.AbstractModel):
     _inherit = "commission.line.mixin"
 
@@ -58,6 +65,16 @@ class AccountInvoiceLineAgent(models.Model):
         ],
         string="Role",
     )
+
+    def _register_hook(self):
+        _ensure_column(self.env.cr, "account_invoice_line_agent", "agent_role", "VARCHAR")
+        _ensure_column(
+            self.env.cr,
+            "account_invoice_line_agent",
+            "cashflow_settled_amount",
+            "NUMERIC",
+        )
+        return super()._register_hook()
 
     cashflow_settled_amount = fields.Monetary(
         string="Already settled (cashflow)",
@@ -249,6 +266,10 @@ class AccountMove(models.Model):
         "invoice date is used.",
         copy=False,
     )
+
+    def _register_hook(self):
+        _ensure_column(self.env.cr, "account_move", "contract_date", "DATE")
+        return super()._register_hook()
 
     def _effective_contract_date(self):
         self.ensure_one()
