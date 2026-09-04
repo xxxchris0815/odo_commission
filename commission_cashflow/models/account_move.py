@@ -20,7 +20,6 @@ class CommissionLineMixin(models.AbstractModel):
             ("partner", "Partner"),
         ],
         string="Role",
-        default="closer",
     )
 
     @api.depends("agent_id", "agent_role")
@@ -58,7 +57,6 @@ class AccountInvoiceLineAgent(models.Model):
             ("partner", "Partner"),
         ],
         string="Role",
-        default="closer",
     )
 
     cashflow_settled_amount = fields.Monetary(
@@ -78,10 +76,52 @@ class AccountInvoiceLineAgent(models.Model):
         for rec in self:
             rec.monthly_staffel = rec._is_monthly_partner_staffel()
 
+    def _used_roles_for_agent(self, object_id, agent_id, exclude=None):
+        domain = [
+            ("object_id", "=", object_id),
+            ("agent_id", "=", agent_id),
+        ]
+        if exclude:
+            domain.append(("id", "not in", exclude.ids))
+        return set(self.search(domain).mapped("agent_role"))
+
+    def _next_free_role(self, used):
+        for role in ("opener", "closer", "partner"):
+            if role not in used:
+                return role
+        return False
+
+    @api.onchange("agent_id")
+    def _onchange_agent_id_pick_role(self):
+        if not self.agent_id or not self.object_id:
+            return
+        used = set(
+            self.object_id.agent_ids.filtered(
+                lambda line: line.agent_id == self.agent_id and line != self
+            ).mapped("agent_role")
+        )
+        if not self.agent_role or self.agent_role in used:
+            self.agent_role = self._next_free_role(used)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            agent_id = vals.get("agent_id")
+            object_id = vals.get("object_id")
+            if not agent_id or not object_id:
+                continue
+            used = self._used_roles_for_agent(object_id, agent_id)
+            role = vals.get("agent_role")
+            if not role or role in used:
+                nxt = self._next_free_role(used)
+                if nxt:
+                    vals["agent_role"] = nxt
+        return super().create(vals_list)
+
     @api.constrains("object_id", "agent_id", "agent_role")
     def _check_unique_agent_role(self):
         for rec in self:
-            if not rec.object_id or not rec.agent_id:
+            if not rec.object_id or not rec.agent_id or not rec.agent_role:
                 continue
             duplicates = self.search_count(
                 [
@@ -95,7 +135,8 @@ class AccountInvoiceLineAgent(models.Model):
                 raise exceptions.ValidationError(
                     self.env._(
                         "Agent %(agent)s is already assigned as %(role)s "
-                        "on this invoice line.",
+                        "on this invoice line. Use a different role "
+                        "(Opener, Closer, Partner).",
                         agent=rec.agent_id.display_name,
                         role=dict(rec._fields["agent_role"].selection).get(
                             rec.agent_role, rec.agent_role

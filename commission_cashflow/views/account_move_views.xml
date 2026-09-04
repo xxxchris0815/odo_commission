@@ -5,7 +5,7 @@
         <field name="inherit_id" ref="account_commission_oca.invoice_line_agent_tree" />
         <field name="arch" type="xml">
             <field name="agent_id" position="after">
-                <field name="agent_role" />
+                <field name="agent_role" required="1" />
             </field>
             <xpath expr="//list" position="attributes">
                 <attribute name="decoration-muted">monthly_staffel</attribute>
