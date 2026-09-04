@@ -1,6 +1,33 @@
 from datetime import date, timedelta
+from html import escape
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
+from odoo.tools.misc import formatLang
+
+
+class ResCompany(models.Model):
+    _inherit = "res.company"
+
+    cashflow_week_mail_partner_ids = fields.Many2many(
+        comodel_name="res.partner",
+        relation="res_company_cashflow_week_mail_partner_rel",
+        column1="company_id",
+        column2="partner_id",
+        string="Weekly cashflow mail to",
+    )
+    cashflow_week_mail_product_ids = fields.Many2many(
+        comodel_name="product.product",
+        relation="res_company_cashflow_week_mail_product_rel",
+        column1="company_id",
+        column2="product_id",
+        string="Weekly cashflow product filter",
+    )
+    cashflow_week_mail_auto = fields.Boolean(
+        string="Email weekly cashflow automatically",
+        help="Every Monday, send the previous ISO week to the recipients. "
+        "No mail is sent if this is off or if no recipient has an email.",
+    )
 
 
 class CommissionCashflowWeek(models.TransientModel):
@@ -11,9 +38,33 @@ class CommissionCashflowWeek(models.TransientModel):
     week = fields.Integer(required=True)
     date_from = fields.Date(readonly=True)
     date_to = fields.Date(readonly=True)
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        required=True,
+        default=lambda self: self.env.company,
+    )
     product_ids = fields.Many2many(
         comodel_name="product.product",
         string="Product filter",
+    )
+    mail_partner_ids = fields.Many2many(
+        comodel_name="res.partner",
+        compute="_compute_mail_settings",
+        inverse="_inverse_mail_settings",
+        string="Email to",
+    )
+    mail_product_ids = fields.Many2many(
+        comodel_name="product.product",
+        compute="_compute_mail_settings",
+        inverse="_inverse_mail_settings",
+        string="Default product filter for Monday email",
+        help="Used by the automatic Monday email. The Send email button uses "
+        "the product filter of this form.",
+    )
+    mail_auto = fields.Boolean(
+        compute="_compute_mail_settings",
+        inverse="_inverse_mail_settings",
+        string="Send every Monday (previous week)",
     )
     currency_id = fields.Many2one(
         comodel_name="res.currency",
@@ -48,7 +99,35 @@ class CommissionCashflowWeek(models.TransientModel):
         iso = today.isocalendar()
         res.setdefault("year", iso.year)
         res.setdefault("week", iso.week)
+        company = self.env.company
+        if "product_ids" in fields_list and company.cashflow_week_mail_product_ids:
+            res.setdefault(
+                "product_ids",
+                [(6, 0, company.cashflow_week_mail_product_ids.ids)],
+            )
         return res
+
+    @api.depends(
+        "company_id",
+        "company_id.cashflow_week_mail_partner_ids",
+        "company_id.cashflow_week_mail_product_ids",
+        "company_id.cashflow_week_mail_auto",
+    )
+    def _compute_mail_settings(self):
+        for rec in self:
+            company = rec.company_id
+            rec.mail_partner_ids = company.cashflow_week_mail_partner_ids
+            rec.mail_product_ids = company.cashflow_week_mail_product_ids
+            rec.mail_auto = bool(company.cashflow_week_mail_auto)
+
+    def _inverse_mail_settings(self):
+        for rec in self:
+            company = rec.company_id.sudo()
+            if not company:
+                continue
+            company.cashflow_week_mail_partner_ids = rec.mail_partner_ids
+            company.cashflow_week_mail_product_ids = rec.mail_product_ids
+            company.cashflow_week_mail_auto = rec.mail_auto
 
     @api.onchange("year", "week")
     def _onchange_week(self):
@@ -87,19 +166,12 @@ class CommissionCashflowWeek(models.TransientModel):
         self._set_week_dates()
         return self.action_refresh()
 
-    def action_refresh(self):
-        self.ensure_one()
-        self._set_week_dates()
-        self.env["commission.cashflow.week.line"].search(
-            [("report_id", "=", self.id)]
-        ).unlink()
-        date_from = self.date_from
-        date_to = self.date_to
-        product_ids = self.product_ids
+    def _collect_week_data(self, date_from, date_to, product_ids):
         invoices = self.env["account.move"].search(
             [
                 ("move_type", "=", "out_invoice"),
                 ("state", "=", "posted"),
+                ("company_id", "=", (self.company_id or self.env.company).id),
             ]
         )
         closing_invoices = invoices.filtered(
@@ -164,12 +236,32 @@ class CommissionCashflowWeek(models.TransientModel):
                 share = paid * (line.price_subtotal / line_base)
                 product_cashflow[pname] = product_cashflow.get(pname, 0.0) + share
 
-        self.closing_count = closing_count
-        self.order_volume = order_volume
-        self.cashflow_in = cashflow_in
-        Line = self.env["commission.cashflow.week.line"]
+        def _sorted_items(mapping):
+            return sorted(mapping.items(), key=lambda item: -item[1])
+
+        return {
+            "closing_count": closing_count,
+            "order_volume": order_volume,
+            "cashflow_in": cashflow_in,
+            "product_revenue": _sorted_items(product_revenue),
+            "closer_revenue": _sorted_items(closer_revenue),
+            "product_cashflow": _sorted_items(product_cashflow),
+        }
+
+    def action_refresh(self):
+        self.ensure_one()
+        self._set_week_dates()
+        self.env["commission.cashflow.week.line"].search(
+            [("report_id", "=", self.id)]
+        ).unlink()
+        data = self._collect_week_data(
+            self.date_from, self.date_to, self.product_ids
+        )
+        self.closing_count = data["closing_count"]
+        self.order_volume = data["order_volume"]
+        self.cashflow_in = data["cashflow_in"]
         vals_list = []
-        for name, amount in sorted(product_revenue.items(), key=lambda i: -i[1]):
+        for name, amount in data["product_revenue"]:
             vals_list.append(
                 {
                     "report_id": self.id,
@@ -178,7 +270,7 @@ class CommissionCashflowWeek(models.TransientModel):
                     "amount": amount,
                 }
             )
-        for name, amount in sorted(closer_revenue.items(), key=lambda i: -i[1]):
+        for name, amount in data["closer_revenue"]:
             vals_list.append(
                 {
                     "report_id": self.id,
@@ -187,7 +279,7 @@ class CommissionCashflowWeek(models.TransientModel):
                     "amount": amount,
                 }
             )
-        for name, amount in sorted(product_cashflow.items(), key=lambda i: -i[1]):
+        for name, amount in data["product_cashflow"]:
             vals_list.append(
                 {
                     "report_id": self.id,
@@ -197,7 +289,7 @@ class CommissionCashflowWeek(models.TransientModel):
                 }
             )
         if vals_list:
-            Line.create(vals_list)
+            self.env["commission.cashflow.week.line"].create(vals_list)
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,
@@ -205,6 +297,125 @@ class CommissionCashflowWeek(models.TransientModel):
             "view_mode": "form",
             "target": "current",
         }
+
+    def _fmt_amount(self, amount):
+        return formatLang(
+            self.env, amount, currency_obj=self.currency_id or self.env.company.currency_id
+        )
+
+    def _fmt_section(self, title, items):
+        if not items:
+            return f"{title}\nKeine Daten"
+        lines = [title]
+        for name, amount in items:
+            lines.append(f"    {name}: {self._fmt_amount(amount)}")
+        return "\n".join(lines)
+
+    def _render_week_email_body(self, data=None):
+        self.ensure_one()
+        if data is None:
+            data = self._collect_week_data(
+                self.date_from, self.date_to, self.product_ids
+            )
+        date_from = self.date_from.strftime("%d.%m.%Y")
+        date_to = self.date_to.strftime("%d.%m.%Y")
+        filter_names = ", ".join(self.product_ids.mapped("display_name"))
+        body = (
+            f"{self.year}, CW: {self.week}\n"
+            f"Date: {date_from} - {date_to}\n"
+            f"Abschlüsse (Vertragsdatum):\t{data['closing_count']}\n"
+            f"Auftragsvolumen:\t{self._fmt_amount(data['order_volume'])}\n"
+            f"Cash-Flow In:\t{self._fmt_amount(data['cashflow_in'])}\n"
+            f"{self._fmt_section('📦 Umsatz nach Produkt', data['product_revenue'])}\n"
+            f"{self._fmt_section('👤 Umsatz nach Closer', data['closer_revenue'])}\n"
+            f"{self._fmt_section('💰 Cash-Flow nach Produkt', data['product_cashflow'])}\n"
+        )
+        if filter_names:
+            body += f"\nFilter: {filter_names}\n"
+        return body
+
+    def _send_week_mail(self):
+        self.ensure_one()
+        partners = self.mail_partner_ids.filtered("email")
+        if not partners:
+            raise UserError(
+                self.env._(
+                    "Bitte mindestens einen Empfänger mit E-Mail-Adresse setzen."
+                )
+            )
+        self._set_week_dates()
+        data = self._collect_week_data(
+            self.date_from, self.date_to, self.product_ids
+        )
+        body = self._render_week_email_body(data)
+        subject = self.env._(
+            "Cashflow Woche %(year)s, CW %(week)s",
+            year=self.year,
+            week=self.week,
+        )
+        body_html = (
+            "<pre style='font-family: sans-serif; font-size: 14px; "
+            "white-space: pre-wrap;'>%s</pre>" % escape(body)
+        )
+        company = self.company_id or self.env.company
+        email_from = company.email or self.env.user.email or False
+        self.env["mail.mail"].sudo().create(
+            {
+                "subject": subject,
+                "body_html": body_html,
+                "email_from": email_from,
+                "email_to": ",".join(partners.mapped("email")),
+                "auto_delete": True,
+            }
+        ).send()
+
+    def action_send_mail(self):
+        self.ensure_one()
+        self.action_refresh()
+        self._send_week_mail()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": self.env._("E-Mail gesendet"),
+                "message": self.env._(
+                    "Die Cashflow-Woche wurde per E-Mail versendet."
+                ),
+                "type": "success",
+                "next": {
+                    "type": "ir.actions.act_window",
+                    "res_model": self._name,
+                    "res_id": self.id,
+                    "view_mode": "form",
+                    "target": "current",
+                },
+            },
+        }
+
+    @api.model
+    def _cron_email_previous_week(self):
+        today = fields.Date.context_today(self)
+        iso = today.isocalendar()
+        monday = date.fromisocalendar(iso.year, iso.week, 1)
+        prev = monday - timedelta(days=1)
+        prev_iso = prev.isocalendar()
+        for company in self.env["res.company"].search(
+            [("cashflow_week_mail_auto", "=", True)]
+        ):
+            partners = company.cashflow_week_mail_partner_ids.filtered("email")
+            if not partners:
+                continue
+            report = self.with_company(company).create(
+                {
+                    "year": prev_iso.year,
+                    "week": prev_iso.week,
+                    "company_id": company.id,
+                    "product_ids": [(6, 0, company.cashflow_week_mail_product_ids.ids)],
+                    "currency_id": company.currency_id.id,
+                }
+            )
+            report._set_week_dates()
+            report._send_week_mail()
 
 
 class CommissionCashflowWeekLine(models.TransientModel):

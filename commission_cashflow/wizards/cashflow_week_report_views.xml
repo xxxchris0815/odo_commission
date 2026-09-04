@@ -5,6 +5,29 @@
         <field name="model">commission.cashflow.week</field>
         <field name="arch" type="xml">
             <form string="Cashflow Woche">
+                <header>
+                    <button
+                        name="action_prev_week"
+                        type="object"
+                        string="Vorherige Woche"
+                    />
+                    <button
+                        name="action_refresh"
+                        type="object"
+                        class="btn-primary"
+                        string="Aktualisieren"
+                    />
+                    <button
+                        name="action_next_week"
+                        type="object"
+                        string="Nächste Woche"
+                    />
+                    <button
+                        name="action_send_mail"
+                        type="object"
+                        string="E-Mail senden"
+                    />
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -18,6 +41,7 @@
                             <field name="date_to" />
                         </h3>
                     </div>
+                    <field name="company_id" invisible="1" />
                     <group>
                         <group>
                             <field
@@ -29,24 +53,6 @@
                         </group>
                     </group>
                     <group>
-                        <button
-                            name="action_prev_week"
-                            type="object"
-                            string="Vorherige Woche"
-                        />
-                        <button
-                            name="action_refresh"
-                            type="object"
-                            class="oe_highlight"
-                            string="Aktualisieren"
-                        />
-                        <button
-                            name="action_next_week"
-                            type="object"
-                            string="Nächste Woche"
-                        />
-                    </group>
-                    <group>
                         <group string="Abschlüsse (Vertragsdatum)">
                             <field name="closing_count" string="Abschlüsse" />
                             <field name="order_volume" string="Auftragsvolumen" />
@@ -54,6 +60,29 @@
                         <group string="Zahlungen">
                             <field name="cashflow_in" string="Cash-Flow In" />
                             <field name="currency_id" invisible="1" />
+                        </group>
+                    </group>
+                    <group string="Wöchentliche E-Mail">
+                        <group>
+                            <field
+                                name="mail_partner_ids"
+                                widget="many2many_tags"
+                                string="Empfänger"
+                                options="{'no_create': True}"
+                            />
+                            <field
+                                name="mail_auto"
+                                string="Jeden Montag automatisch senden"
+                            />
+                        </group>
+                        <group>
+                            <field
+                                name="mail_product_ids"
+                                widget="many2many_tags"
+                                string="Standardfilter für Montagsversand"
+                                options="{'no_create': True}"
+                                help="Leer = alle Produkte. Gilt nur für den automatischen Montagsversand. Der Button „E-Mail senden“ nutzt den Filter oben."
+                            />
                         </group>
                     </group>
                     <notebook>
