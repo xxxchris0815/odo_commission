@@ -6,30 +6,6 @@ from odoo.exceptions import UserError
 from odoo.tools.misc import formatLang
 
 
-class ResCompany(models.Model):
-    _inherit = "res.company"
-
-    cashflow_week_mail_partner_ids = fields.Many2many(
-        comodel_name="res.partner",
-        relation="res_company_cashflow_week_mail_partner_rel",
-        column1="company_id",
-        column2="partner_id",
-        string="Weekly cashflow mail to",
-    )
-    cashflow_week_mail_product_ids = fields.Many2many(
-        comodel_name="product.product",
-        relation="res_company_cashflow_week_mail_product_rel",
-        column1="company_id",
-        column2="product_id",
-        string="Weekly cashflow product filter",
-    )
-    cashflow_week_mail_auto = fields.Boolean(
-        string="Email weekly cashflow automatically",
-        help="Every Monday, send the previous ISO week to the recipients. "
-        "No mail is sent if this is off or if no recipient has an email.",
-    )
-
-
 class CommissionCashflowWeek(models.TransientModel):
     _name = "commission.cashflow.week"
     _description = "Weekly cashflow analysis"
