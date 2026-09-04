@@ -83,11 +83,7 @@ class AccountInvoiceLineAgent(models.Model):
     )
     def _compute_cashflow_settled_amount(self):
         for line in self:
-            line.cashflow_settled_amount = sum(
-                sl.settled_amount
-                for sl in line.settlement_line_ids
-                if sl.settlement_id.state != "cancel"
-            )
+            line.cashflow_settled_amount = line._cashflow_already_settled()
 
     @api.depends(
         "settlement_line_ids",
@@ -107,7 +103,7 @@ class AccountInvoiceLineAgent(models.Model):
         blocks later payments and leaves a stale counter after deletions.
         """
         for line in self:
-            already = line.cashflow_settled_amount
+            already = line._cashflow_already_settled()
             if line._is_monthly_partner_staffel():
                 line.settled = False
                 continue
@@ -195,6 +191,15 @@ class AccountInvoiceLineAgent(models.Model):
             and self.commission_id.commission_type == "section"
         )
 
+    def _cashflow_already_settled(self):
+        """Sum live settlement lines so deleted/cancelled docs do not linger."""
+        self.ensure_one()
+        return sum(
+            self.settlement_line_ids.filtered(
+                lambda sl: sl.settlement_id.state != "cancel"
+            ).mapped("settled_amount")
+        )
+
     def _get_cashflow_commission(self, payment_ratio):
         """Return the commission amount proportional to the payment received.
 
@@ -206,7 +211,7 @@ class AccountInvoiceLineAgent(models.Model):
         if self._is_monthly_partner_staffel():
             return 0.0
         total_commission = self.amount
-        already_settled = self.cashflow_settled_amount
+        already_settled = self._cashflow_already_settled()
         target = total_commission * payment_ratio
         return max(0.0, min(target, total_commission) - already_settled)
 

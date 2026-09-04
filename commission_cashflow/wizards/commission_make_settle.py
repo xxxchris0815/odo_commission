@@ -28,28 +28,27 @@ class CommissionMakeSettle(models.TransientModel):
         return current_date + relativedelta(months=1)
 
     def _get_cashflow_agent_lines(self, agent, date_to_agent):
-        """Return opener/closer lines with actual payments up to date_to.
+        """Return opener/closer lines with an unpaid cashflow remainder.
 
-        OCA invoice settlements only take invoices *before* the current
-        period start. Cashflow must include the current month, otherwise
-        only the Partner staffel (which uses its own date window) appears.
+        Do not use the stored `settled` flag: leftover values from earlier
+        test settlements hid Klara/Sabrina while Partner still ran.
         """
         date_limit = self.date_to or date_to_agent
-        domain = Domain.AND(
-            [
-                Domain("agent_id", "=", agent.id),
-                Domain("settled", "=", False),
-                Domain("invoice_id.state", "=", "posted"),
-                Domain("object_id.display_type", "=", "product"),
-                Domain("invoice_date", "<=", date_limit),
-            ]
-        )
         candidates = self.env["account.invoice.line.agent"].search(
-            domain, order="invoice_date"
+            [
+                ("agent_id", "=", agent.id),
+                ("invoice_id.state", "=", "posted"),
+            ],
+            order="invoice_date",
         )
         result = self.env["account.invoice.line.agent"]
         for line in candidates:
             if line._is_monthly_partner_staffel():
+                continue
+            display = line.object_id.display_type
+            if display in ("line_section", "line_note"):
+                continue
+            if date_limit and line.invoice_date and line.invoice_date > date_limit:
                 continue
             invoice = line.invoice_id
             paid = invoice.amount_total - invoice.amount_residual
