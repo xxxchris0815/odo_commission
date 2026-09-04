@@ -18,54 +18,14 @@ msgstr ""
 
 #. module: commission_cashflow
 #: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
 msgid ", CW "
 msgstr ", KW "
 
 #. module: commission_cashflow
-#. odoo-python
-#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
-msgid ""
-"%(year)s, CW: %(week)s\n"
-"Date: %(date_from)s - %(date_to)s\n"
-"Closings (contract date):\t%(closings)s\n"
-"Order volume:\t%(order_volume)s\n"
-"Cash-Flow In:\t%(cashflow_in)s\n"
-"%(product_revenue)s\n"
-"%(closer_revenue)s\n"
-"%(product_cashflow)s\n"
-msgstr ""
-"%(year)s, KW: %(week)s\n"
-"Datum: %(date_from)s - %(date_to)s\n"
-"Abschlüsse (Vertragsdatum):\t%(closings)s\n"
-"Auftragsvolumen:\t%(order_volume)s\n"
-"Cash-Flow In:\t%(cashflow_in)s\n"
-"%(product_revenue)s\n"
-"%(closer_revenue)s\n"
-"%(product_cashflow)s\n"
-
-#. module: commission_cashflow
-#. odoo-python
-#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
-msgid "\nFilter: %(filter)s\n"
-msgstr "\nFilter: %(filter)s\n"
-
-#. module: commission_cashflow
-#. odoo-python
-#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
-msgid "📦 Revenue by product"
-msgstr "📦 Umsatz nach Produkt"
-
-#. module: commission_cashflow
-#. odoo-python
-#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
-msgid "👤 Revenue by closer"
-msgstr "👤 Umsatz nach Closer"
-
-#. module: commission_cashflow
-#. odoo-python
-#: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
-msgid "💰 Cash-Flow by product"
-msgstr "💰 Cash-Flow nach Produkt"
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail_table
+msgid "Amount"
+msgstr "Betrag"
 
 #. module: commission_cashflow
 #: model:ir.model.fields,field_description:commission_cashflow.field_account_invoice_line_agent__cashflow_settled_amount
@@ -112,6 +72,7 @@ msgstr "Vermittlerrolle"
 #: model:ir.actions.act_window,name:commission_cashflow.action_commission_cashflow_week
 #: model:ir.ui.menu,name:commission_cashflow.menu_commission_cashflow_week
 #: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
 msgid "Cashflow Week"
 msgstr "Cashflow Woche"
 
@@ -131,6 +92,7 @@ msgstr "Cash-Flow nach Produkt"
 #. module: commission_cashflow
 #: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__cashflow_in
 #: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
 msgid "Cash-Flow In"
 msgstr "Cash-Flow In"
 
@@ -151,6 +113,7 @@ msgstr "Closer"
 #. module: commission_cashflow
 #: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__closing_count
 #: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
 msgid "Closings"
 msgstr "Abschlüsse"
 
@@ -191,6 +154,11 @@ msgstr "Provision: wöchentliche Cashflow-E-Mail"
 #: model:ir.model.fields,field_description:commission_cashflow.field_account_move__contract_date
 msgid "Contract Date"
 msgstr "Vertragsabschluss"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Contract date"
+msgstr "Vertragsdatum"
 
 #. module: commission_cashflow
 #. odoo-python
@@ -264,6 +232,7 @@ msgstr "Kein Closer"
 #. module: commission_cashflow
 #. odoo-python
 #: code:addons/commission_cashflow/wizards/cashflow_week_report.py:0
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail_table
 msgid "No data"
 msgstr "Keine Daten"
 
@@ -282,6 +251,7 @@ msgstr "Opener-Provision"
 #. module: commission_cashflow
 #: model:ir.model.fields,field_description:commission_cashflow.field_commission_cashflow_week__order_volume
 #: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
 msgid "Order Volume"
 msgstr "Auftragsvolumen"
 
@@ -300,6 +270,16 @@ msgid ""
 msgstr ""
 "Die Partner-Staffel nutzt den monatlichen Cashflow über alle Rechnungen, "
 "nicht den Betrag dieser Rechnung."
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Filter:"
+msgstr "Filter:"
+
+#. module: commission_cashflow
+#: model_terms:ir.ui.view,arch_db:commission_cashflow.cashflow_week_mail
+msgid "Payment date"
+msgstr "Zahlungsdatum"
 
 #. module: commission_cashflow
 #: model_terms:ir.ui.view,arch_db:commission_cashflow.view_commission_cashflow_week_form

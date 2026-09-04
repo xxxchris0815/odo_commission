@@ -1,5 +1,4 @@
 from datetime import date, timedelta
-from html import escape
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -285,14 +284,6 @@ class CommissionCashflowWeek(models.TransientModel):
             self.env, amount, currency_obj=self.currency_id or self.env.company.currency_id
         )
 
-    def _fmt_section(self, title, items):
-        if not items:
-            return f"{title}\n{self.env._('No data')}"
-        lines = [title]
-        for name, amount in items:
-            lines.append(f"    {name}: {self._fmt_amount(amount)}")
-        return "\n".join(lines)
-
     def _mail_lang(self, partners=None):
         self.ensure_one()
         partners = partners if partners is not None else self.mail_partner_ids
@@ -302,44 +293,41 @@ class CommissionCashflowWeek(models.TransientModel):
             or self.env.lang
         )
 
-    def _render_week_email_body(self, data=None):
+    def _render_week_email_html(self, data=None):
         self.ensure_one()
         if data is None:
             data = self._collect_week_data(
                 self.date_from, self.date_to, self.product_ids
             )
-        date_from = format_date(self.env, self.date_from)
-        date_to = format_date(self.env, self.date_to)
-        filter_names = ", ".join(self.product_ids.mapped("display_name"))
-        body = self.env._(
-            "%(year)s, CW: %(week)s\n"
-            "Date: %(date_from)s - %(date_to)s\n"
-            "Closings (contract date):\t%(closings)s\n"
-            "Order volume:\t%(order_volume)s\n"
-            "Cash-Flow In:\t%(cashflow_in)s\n"
-            "%(product_revenue)s\n"
-            "%(closer_revenue)s\n"
-            "%(product_cashflow)s\n",
-            year=self.year,
-            week=self.week,
-            date_from=date_from,
-            date_to=date_to,
-            closings=data["closing_count"],
-            order_volume=self._fmt_amount(data["order_volume"]),
-            cashflow_in=self._fmt_amount(data["cashflow_in"]),
-            product_revenue=self._fmt_section(
-                self.env._("📦 Revenue by product"), data["product_revenue"]
-            ),
-            closer_revenue=self._fmt_section(
-                self.env._("👤 Revenue by closer"), data["closer_revenue"]
-            ),
-            product_cashflow=self._fmt_section(
-                self.env._("💰 Cash-Flow by product"), data["product_cashflow"]
-            ),
+
+        def rows(items):
+            return [
+                {"name": name, "amount": self._fmt_amount(amount)}
+                for name, amount in items
+            ]
+
+        return self.env["ir.qweb"]._render(
+            "commission_cashflow.cashflow_week_mail",
+            {
+                "year": self.year,
+                "week": self.week,
+                "date_from": format_date(self.env, self.date_from),
+                "date_to": format_date(self.env, self.date_to),
+                "closing_count": data["closing_count"],
+                "order_volume": self._fmt_amount(data["order_volume"]),
+                "cashflow_in": self._fmt_amount(data["cashflow_in"]),
+                "product_revenue": rows(data["product_revenue"]),
+                "closer_revenue": rows(data["closer_revenue"]),
+                "product_cashflow": rows(data["product_cashflow"]),
+                "product_revenue_title": self.env._("Revenue by Product"),
+                "closer_revenue_title": self.env._("Revenue by Closer"),
+                "product_cashflow_title": self.env._("Cash-Flow by Product"),
+                "product_name_header": self.env._("Product"),
+                "closer_name_header": self.env._("Closer"),
+                "filter_names": ", ".join(self.product_ids.mapped("display_name")),
+                "company": self.company_id or self.env.company,
+            },
         )
-        if filter_names:
-            body += self.env._("\nFilter: %(filter)s\n", filter=filter_names)
-        return body
 
     def _send_week_mail(self):
         self.ensure_one()
@@ -355,15 +343,11 @@ class CommissionCashflowWeek(models.TransientModel):
         data = mailer._collect_week_data(
             self.date_from, self.date_to, self.product_ids
         )
-        body = mailer._render_week_email_body(data)
+        body_html = mailer._render_week_email_html(data)
         subject = mailer.env._(
             "Cashflow Week %(year)s, CW %(week)s",
             year=self.year,
             week=self.week,
-        )
-        body_html = (
-            "<pre style='font-family: sans-serif; font-size: 14px; "
-            "white-space: pre-wrap;'>%s</pre>" % escape(body)
         )
         company = self.company_id or self.env.company
         email_from = company.email or self.env.user.email or False
