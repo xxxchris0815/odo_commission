@@ -270,6 +270,38 @@ class AccountMove(models.Model):
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    @api.depends(
+        "commission_free",
+        "agent_ids",
+        "agent_ids.agent_id",
+        "agent_ids.agent_role",
+    )
+    def _compute_commission_status(self):
+        role_labels = dict(
+            self.env["account.invoice.line.agent"]
+            ._fields["agent_role"]
+            .selection
+        )
+        remaining = self.browse()
+        for line in self:
+            if line.commission_free:
+                line.commission_status = self.env._("Comm. free")
+                continue
+            parts = []
+            for agent_line in line.agent_ids:
+                name = agent_line.agent_id.display_name or ""
+                role = role_labels.get(agent_line.agent_role) or agent_line.agent_role
+                if name and role:
+                    parts.append(f"{name} ({role})")
+                elif name:
+                    parts.append(name)
+            if parts:
+                line.commission_status = ", ".join(parts)
+            else:
+                remaining |= line
+        if remaining:
+            super(AccountMoveLine, remaining)._compute_commission_status()
+
     @api.depends("move_id.partner_id")
     def _compute_agent_ids(self):
         """Never copy customer agents. Always assign agent_ids."""

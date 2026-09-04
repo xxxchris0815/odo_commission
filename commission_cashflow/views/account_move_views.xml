@@ -15,4 +15,17 @@
             </xpath>
         </field>
     </record>
+    <record id="view_move_form_commission_agents_label" model="ir.ui.view">
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account_commission_oca.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='invoice_line_ids']/list//button[@name='button_edit_agents']"
+                position="attributes"
+            >
+                <attribute name="invisible">commission_free</attribute>
+                <attribute name="title">View / edit agents</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
