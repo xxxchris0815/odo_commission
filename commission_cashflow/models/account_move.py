@@ -243,30 +243,16 @@ class AccountMove(models.Model):
     _inherit = "account.move"
 
     contract_date = fields.Date(
-        string="Contract date",
-        help="Date the deal was closed. Used for weekly closings and order "
-        "volume. Cashflow still uses the payment date. If empty, invoice "
-        "date is used. Existing Studio fields named like "
-        "Vertragsabschluss are used as fallback.",
+        string="Vertragsabschluss",
+        help="Date the deal was closed. Weekly closings and order volume "
+        "use this date. Cashflow uses the payment date. If empty, the "
+        "invoice date is used.",
         copy=False,
     )
 
     def _effective_contract_date(self):
-        """Contract date, then known Studio fields, then invoice date."""
         self.ensure_one()
-        if self.contract_date:
-            return self.contract_date
-        for fname in (
-            "x_studio_vertragsabschluss",
-            "x_studio_vertragsabschlussdatum",
-            "x_vertragsabschluss",
-            "x_contract_date",
-        ):
-            if fname in self._fields:
-                value = self[fname]
-                if value:
-                    return value
-        return self.invoice_date
+        return self.contract_date or self.invoice_date
 
     def _get_cashflow_in_period(self, date_from, date_to):
         """Sum of payment amounts reconciled on this invoice in the date range."""
