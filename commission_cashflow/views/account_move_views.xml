@@ -7,6 +7,12 @@
             <field name="agent_id" position="after">
                 <field name="agent_role" />
             </field>
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-muted">monthly_staffel</attribute>
+            </xpath>
+            <xpath expr="//list" position="inside">
+                <field name="monthly_staffel" column_invisible="1" />
+            </xpath>
         </field>
     </record>
 </odoo>

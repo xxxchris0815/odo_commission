@@ -56,7 +56,10 @@ class ResPartner(models.Model):
         string="Commission Roles",
         help="An agent can have one or more roles: Opener, Closer, Partner. "
         "Each role has its own commission rule. On a deal, add the same "
-        "person once per role that applies (typically three roles per invoice).",
+        "person once per role that applies (typically three roles per invoice). "
+        "Partner staffel (By sections) is calculated from the monthly "
+        "cashflow of all invoices where this agent is Partner, not from "
+        "a single invoice.",
     )
     # Legacy, non-stored: old partner views may still request these names.
     # Must not be stored — a missing res_partner column breaks login and cron
