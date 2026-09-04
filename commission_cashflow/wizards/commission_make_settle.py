@@ -3,7 +3,6 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields, models
-from odoo.fields import Domain
 
 
 class CommissionMakeSettle(models.TransientModel):

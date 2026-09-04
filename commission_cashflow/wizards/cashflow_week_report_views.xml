@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_commission_cashflow_week_form" model="ir.ui.view">
+        <field name="name">commission.cashflow.week.form</field>
+        <field name="model">commission.cashflow.week</field>
+        <field name="arch" type="xml">
+            <form string="Cashflow Woche">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="year" class="oe_inline" />
+                            <span>, KW </span>
+                            <field name="week" class="oe_inline" />
+                        </h1>
+                        <h3>
+                            <field name="date_from" />
+                            <span> – </span>
+                            <field name="date_to" />
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field
+                                name="product_ids"
+                                widget="many2many_tags"
+                                string="Filter Produkte"
+                                options="{'no_create': True}"
+                            />
+                        </group>
+                    </group>
+                    <group>
+                        <button
+                            name="action_prev_week"
+                            type="object"
+                            string="Vorherige Woche"
+                        />
+                        <button
+                            name="action_refresh"
+                            type="object"
+                            class="oe_highlight"
+                            string="Aktualisieren"
+                        />
+                        <button
+                            name="action_next_week"
+                            type="object"
+                            string="Nächste Woche"
+                        />
+                    </group>
+                    <group>
+                        <group string="Abschlüsse (Vertragsdatum)">
+                            <field name="closing_count" string="Abschlüsse" />
+                            <field name="order_volume" string="Auftragsvolumen" />
+                        </group>
+                        <group string="Zahlungen">
+                            <field name="cashflow_in" string="Cash-Flow In" />
+                            <field name="currency_id" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Umsatz nach Produkt" name="product_revenue">
+                            <field name="product_revenue_ids" nolabel="1">
+                                <list create="0" delete="0">
+                                    <field name="name" string="Produkt" />
+                                    <field name="amount" sum="Total" />
+                                    <field name="line_type" column_invisible="1" />
+                                    <field name="currency_id" column_invisible="1" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Umsatz nach Closer" name="closer_revenue">
+                            <field name="closer_revenue_ids" nolabel="1">
+                                <list create="0" delete="0">
+                                    <field name="name" string="Closer" />
+                                    <field name="amount" sum="Total" />
+                                    <field name="line_type" column_invisible="1" />
+                                    <field name="currency_id" column_invisible="1" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Cash-Flow nach Produkt" name="product_cashflow">
+                            <field name="product_cashflow_ids" nolabel="1">
+                                <list create="0" delete="0">
+                                    <field name="name" string="Produkt" />
+                                    <field name="amount" sum="Total" />
+                                    <field name="line_type" column_invisible="1" />
+                                    <field name="currency_id" column_invisible="1" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_commission_cashflow_week" model="ir.actions.act_window">
+        <field name="name">Cashflow Woche</field>
+        <field name="res_model">commission.cashflow.week</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{}</field>
+    </record>
+    <menuitem
+        id="menu_commission_cashflow_week"
+        name="Cashflow Woche"
+        parent="commission_oca.menu_commission"
+        action="action_commission_cashflow_week"
+        sequence="25"
+        groups="commission_oca.group_commission_user"
+    />
+</odoo>
