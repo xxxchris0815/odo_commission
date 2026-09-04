@@ -53,7 +53,11 @@ class CommissionMakeSettle(models.TransientModel):
                 continue
             invoice = line.invoice_id
             paid = invoice.amount_total - invoice.amount_residual
-            if paid > 0.01:
+            if invoice.amount_total:
+                ratio = min(paid / invoice.amount_total, 1.0)
+            else:
+                ratio = 0.0
+            if line._get_cashflow_commission(ratio) > 0.01:
                 result |= line
         return result
 
@@ -73,11 +77,6 @@ class CommissionMakeSettle(models.TransientModel):
             payment_ratio = 0.0
 
         cashflow_amount = line._get_cashflow_commission(payment_ratio)
-
-        line.cashflow_settled_amount += cashflow_amount
-
-        if abs(line.cashflow_settled_amount - line.amount) < 0.01:
-            line.settled = True
 
         return {
             "settlement_id": settlement.id,
@@ -209,7 +208,6 @@ class CommissionMakeSettle(models.TransientModel):
                         )
                         if abs(share) < 0.01:
                             continue
-                        line.cashflow_settled_amount += share
                         line_vals.append(
                             {
                                 "settlement_id": settlement.id,

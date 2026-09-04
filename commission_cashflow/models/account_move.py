@@ -61,9 +61,10 @@ class AccountInvoiceLineAgent(models.Model):
 
     cashflow_settled_amount = fields.Monetary(
         string="Already settled (cashflow)",
-        default=0.0,
-        help="Sum of commission amounts already settled via cashflow for this "
-        "agent line. Used to compute the remaining commission on partial payments.",
+        compute="_compute_cashflow_settled_amount",
+        store=True,
+        help="Sum of non-cancelled cashflow settlement lines for this agent "
+        "line. Deleting a settlement resets this automatically.",
     )
     monthly_staffel = fields.Boolean(
         compute="_compute_monthly_staffel",
@@ -75,6 +76,48 @@ class AccountInvoiceLineAgent(models.Model):
     def _compute_monthly_staffel(self):
         for rec in self:
             rec.monthly_staffel = rec._is_monthly_partner_staffel()
+
+    @api.depends(
+        "settlement_line_ids.settled_amount",
+        "settlement_line_ids.settlement_id.state",
+    )
+    def _compute_cashflow_settled_amount(self):
+        for line in self:
+            line.cashflow_settled_amount = sum(
+                sl.settled_amount
+                for sl in line.settlement_line_ids
+                if sl.settlement_id.state != "cancel"
+            )
+
+    @api.depends(
+        "settlement_line_ids",
+        "settlement_line_ids.settlement_id.state",
+        "settlement_line_ids.settled_amount",
+        "invoice_id",
+        "invoice_id.state",
+        "amount",
+        "agent_role",
+        "commission_id",
+        "cashflow_settled_amount",
+    )
+    def _compute_settled(self):
+        """Keep the line open until cashflow has paid the full commission.
+
+        OCA marks a line settled as soon as any settlement line exists, which
+        blocks later payments and leaves a stale counter after deletions.
+        """
+        for line in self:
+            already = line.cashflow_settled_amount
+            if line._is_monthly_partner_staffel():
+                line.settled = False
+                continue
+            if abs(line.amount) > 0.01 and already + 0.01 < abs(line.amount):
+                line.settled = False
+            else:
+                line.settled = any(
+                    sl.settlement_id.state != "cancel"
+                    for sl in line.settlement_line_ids
+                )
 
     def _used_roles_for_agent(self, object_id, agent_id, exclude=None):
         domain = [
@@ -164,9 +207,8 @@ class AccountInvoiceLineAgent(models.Model):
             return 0.0
         total_commission = self.amount
         already_settled = self.cashflow_settled_amount
-        remaining = total_commission - already_settled
-        proportional = total_commission * payment_ratio
-        return min(proportional, remaining)
+        target = total_commission * payment_ratio
+        return max(0.0, min(target, total_commission) - already_settled)
 
     @api.depends(
         "object_id.price_subtotal",
